@@ -1,7 +1,8 @@
 <?php
 include_once( "database.php" );
 
-class Functions{
+class Functions
+{
 	private $database;
 	private $db2;
 
@@ -72,84 +73,120 @@ class Functions{
 		return trim( $v );
 	}
 
-	public function income_cat_list( $user_id )
-	{
-		$query 			= "SELECT * FROM category WHERE type_id = '1' AND user_id = ? AND deprecated = 0 ORDER BY name";
-		$income_count	= $this->db2->select( $query, $income_list, $user_id );
+	//New Functions
 
-		return $income_list;
-	}
-
-	public function cat_select_list( $user_id )
-	{
-		/*
-		$query			= "SELECT * FROM category c WHERE user_id = '$user_id' ORDER BY type_id, name";
-		$category_count = $this->db2->select( $query, $categories_select, $user_id );
-
-		$first 			= 0;
-var_dump( $categories_select );
-		foreach ( $categories_select as $cat )
-		{
-			if ($cat['type_id'] == 1) {
-				$options 	.= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
-				$first		 = 1;
-			} else {
-				if ($first == 1) {
-					$options .= "<option disabled='disabled'>&nbsp;</option>";
-					$options .= "<option disabled='disabled'>Expenses</option>";
-				}
-
-				$first = 0;
-
-				$options .= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
-			}
-		}
-
-		return $options;
-		*/
-		$categories_select = $this->database->mysqli->query("SELECT * FROM category c WHERE user_id = '$user_id' ORDER BY type_id, name");
-		$options = "<option disabled='disabled'>Income</option>";
-		$first = 0;
-		while ($cat = $categories_select->fetch_assoc()) {
-			if ($cat['type_id'] == 1) {
-				$options .= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
-				$first = 1;
-			} else {
-				if ($first == 1) {
-					$options .= "<option disabled='disabled'>&nbsp;</option>";
-					$options .= "<option disabled='disabled'>Expenses</option>";
-				}
-				$first = 0;
-
-				$options .= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
-			}
-		}
-		return $options;
-	}
-	
+	/*
+	*
+	* Helper functions for table users
+	*
+	*/
 	public static function User_Load( &$db, $username, &$user )
 	{
 		return $db->single( 'SELECT * FROM users WHERE username = ?', $user, $username );
 	}
 
-	public function get_userInfo( $user_login )
+	/*
+	*
+	* Helper functions for table item
+	*
+	*/
+	public static function ItemList_Load_CatIDAndMonth( &$db, $cat_id, $month, &$items )
 	{
-		$uid_q = $this->database->mysqli->query("SELECT * FROM users WHERE username = '".$user_login."'");
-
-		return $uid_q->fetch_assoc();
+		return $db->select( "SELECT
+								SUM( amount ) as day_amount,
+								DAY( date ) as day
+							 FROM 
+								item
+							 WHERE
+								cat_id 				= ? AND
+								MONTHNAME( date )	= ? AND
+								YEAR( date )		= YEAR( NOW() )
+							 GROUP BY
+								DAY( date )",
+		  					$items, $cat_id, $month );
 	}
 
-	public function get_months($month) {
-		$month_names = array("January","February","March","April","May","June","July","August","September","October","November","December");
-		$months = "<select id='month-select'>";
-		foreach ($month_names as $month_in) {
-			$months .= "<option";
+	public static function Item_Total_TypeID_MonthYear( &$db, $type_id, $user_id, $month, $year, &$total )
+	{
+		return $db->single( "SELECT
+								SUM( i.amount ) as total
+							FROM
+								item i
+								LEFT OUTER JOIN category c ON i.cat_id = c.id
+							WHERE
+								i.user_id 			= ? AND
+								MONTHNAME( i.date ) = ? AND
+								YEAR( i.date )		= ?	AND
+								c.type_id 			= ? AND
+								c.deprecated 		= 0",
+							$total, $user_id, $month, $year, $type_id );
+	}
+
+	/*
+	*
+	* Helper functions for table category
+	*
+	*/
+	public static function CategoryList_Load_Month( &$db, $user_id, $month, $year, &$categories )
+	{
+		$month_int 		= Functions::month_int( $month );
+		$format_date 	= $year."-".$month_int."-00";
+
+		return $db->select( "SELECT
+							 	*
+							 FROM
+							 	category
+							 WHERE
+							 	user_id 	= ?	AND
+							 	deprecated 	= 0 AND
+							 	(
+							 		(
+							 			( start_date 	<= ? OR start_date 	= '0000-00-00' ) AND
+							 			( end_date 		>= ? OR end_date 	= '0000-00-00' )
+							 		)
+							 		OR
+							 		(
+							 			( start_date 	<= ? AND start_date <> '0000-00-00' ) AND
+							 			( end_date 		>= ? AND end_date 	<> '0000-00-00' )
+							 		)
+							 	)
+							 ORDER BY
+							 	type_id, name",
+							$categories, $user_id, $format_date, $format_date, $month_int, $month_int );
+	}
+
+	public static function Category_MonthYear_Total_Load_ID( &$db, $cat_id, $user_id, $month, $year, &$total )
+	{
+		return $db->single( "SELECT
+								SUM( amount ) as total
+							 FROM
+								item
+							 WHERE
+								cat_id 				= ?	AND
+								user_id 			= ?	AND
+								MONTHNAME( date ) 	= ?	AND
+								YEAR( date )		= ?",
+							$total, $cat_id, $user_id, $month, $year );
+	}
+
+	//Helper Functions
+	public function get_months( $month )
+	{
+		$month_names 	= array( "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" );
+		$months 		= "<select id='month-select'>";
+
+		foreach ( $month_names as $month_in )
+		{
+			$months 	.= "<option";
+
 			if ($month_in == $month)
 				$months .= " selected='selected'";
 
-			$months .= ">".$month_in."</option>";
+			$months 	.= ">".$month_in."</option>";
 		}
-		$months .= "</select>";
+
+		$months 		.= "</select>";
+
 		return $months;
 	}
 
@@ -173,7 +210,7 @@ var_dump( $categories_select );
 			return $month." 1, ".$year;
 	}
 
-	public function month_int( $month ) {
+	public static function month_int( $month ) {
 		if ($month == "January") 		return "01";
 		elseif ($month == "February") 	return "02";
 		elseif ($month == "March") 		return "03";
@@ -278,5 +315,70 @@ var_dump( $categories_select );
 
 		return $year_options;
 	}
+
+	//Old functions
+	public function income_cat_list( $user_id )
+	{
+		$query 			= "SELECT * FROM category WHERE type_id = '1' AND user_id = ? AND deprecated = 0 ORDER BY name";
+		$income_count	= $this->db2->select( $query, $income_list, $user_id );
+
+		return $income_list;
+	}
+
+	public function cat_select_list( $user_id )
+	{
+		/*
+		$query			= "SELECT * FROM category c WHERE user_id = '$user_id' ORDER BY type_id, name";
+		$category_count = $this->db2->select( $query, $categories_select, $user_id );
+
+		$first 			= 0;
+		var_dump( $categories_select );
+		foreach ( $categories_select as $cat )
+		{
+			if ($cat['type_id'] == 1) {
+				$options 	.= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
+				$first		 = 1;
+			} else {
+				if ($first == 1) {
+					$options .= "<option disabled='disabled'>&nbsp;</option>";
+					$options .= "<option disabled='disabled'>Expenses</option>";
+				}
+
+				$first = 0;
+
+				$options .= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
+			}
+		}
+
+		return $options;
+		*/
+		$categories_select = $this->database->mysqli->query("SELECT * FROM category c WHERE user_id = '$user_id' ORDER BY type_id, name");
+		$options = "<option disabled='disabled'>Income</option>";
+		$first = 0;
+		while ($cat = $categories_select->fetch_assoc()) {
+			if ($cat['type_id'] == 1) {
+				$options .= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
+				$first = 1;
+			} else {
+				if ($first == 1) {
+					$options .= "<option disabled='disabled'>&nbsp;</option>";
+					$options .= "<option disabled='disabled'>Expenses</option>";
+				}
+				$first = 0;
+
+				$options .= "<option id=".$cat['id'].">&nbsp;".$cat['name']."</option>";
+			}
+		}
+		return $options;
+	}
+
+	public function get_userInfo( $user_login )
+	{
+		$uid_q = $this->database->mysqli->query("SELECT * FROM users WHERE username = '".$user_login."'");
+
+		return $uid_q->fetch_assoc();
+	}
+
+	
 }
 ?>

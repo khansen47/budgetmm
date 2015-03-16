@@ -1,6 +1,6 @@
 <?php
-require_once("classes/layout.php");
-include_once("classes/functions.php");
+require_once( "classes/layout.php" );
+include_once( "classes/functions.php" );
 
 $layout 	= new Layout();
 $functions	= new Functions();
@@ -9,12 +9,12 @@ $database2 	= new Database2();
 $layout->header();
 $layout->session_inc();
 
-if (!isset($_SESSION['login'])) {
-	header("Location: login.php");
+if ( !isset( $_SESSION[ 'login' ] ) )
+{
+	header( "Location: login.php" );
 	die();
 }
 
-//$user_info 	= $functions->get_userInfo( $_SESSION['login'] );
 if ( !$functions->User_Load( $database2, $_SESSION[ 'login' ], $user_info ) )
 {
 	header( 'Location: login.php' );

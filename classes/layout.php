@@ -1,12 +1,13 @@
 <?php
-class Layout{
+class Layout
+{
 	public $dialog 		= true;
 	private $js 		= array();
 	private $css 		= array();
 	private $project 	= "Budget My Money";
 	private $title 		= "Budget My Money";
 	private $base_url 	= "";
-	private $includes 	= "/includes";
+	private $includes 	= "includes";
 
 	public function __construct()
 	{
