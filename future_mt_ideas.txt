@@ -1,0 +1,68 @@
+Bugs/New Features/Design Changes
+
+FUNCTIONALITY
+
+LAYOUT
+	- figure out what I want for the Overall Account
+	- Categories show its % full, based on budget
+		- if budget is 0 or not defined do not show any percentage
+		- Percentage green for 0-45%, yellow 45-70%, orange 71-85%, red 86%-100%, BOLD RED > 100
+	- Change Left Navigation
+	- Change background
+	- YEAR will have multiple aspects
+		- Year review will be the same
+		- Add year items ( will show all items for the year? )
+	- MONTH will have multiple aspects
+		- Month items will remain the same
+		- Month compare to previous years
+			- This will show each previous/current month record
+	- CATEGORY
+		- Show multiple years?
+		- Show each month for the year
+	
+
+LAYOUT CHANGED/FIXED
+	- Income / expenses colored respectively on the year review
+	- Center Graph on year_review
+	
+NEW FEATURES
+	- Add BMM icon
+	- Add new colors
+	- Add profile edit
+	- Add profile create
+	- SHA1 password
+	- Add Query ability to search through items
+		- See all items from target from X date to y, etc.
+
+	
+FEATURE ADDED
+	- Month Report Page which displays the monthly report I typically due. look at documents\Budget Month Review\March
+	
+BUGS
+	- When adding items, multiple instances occur
+		- Occurs after editing items
+	- Content extends beyond the background (gray)
+	- Edit of income amount does not work as intended (Does not account for comma's any edit)
+	- Last login does not work ( column last_login )
+	- Session timeout seems infinite
+	
+FIXED
+	- Year select 2012 + not 2008 +
+	- When amount for the month is negative, show red not green
+	- Text area for items have a max height with a scroll bar
+	- When adding an item have it show where in the item list it was added
+	- When changing category in drop down show item list for the cat
+	- Quick add moved to top of categories
+	- Categories listed vertically
+	-  Alternate row colors for item display
+	- Categories have an active/disabled option
+	-  Categories can be active for certain months in the year. I.e. (Jan- Jul)
+	- Categories can be active for unconnected months in the year. i.e. (Jan, Aug, Dec)
+	- When viewing previous months, it will not have to check for unactivated months.
+	- If the total number items in the month is 0, then check to see if it is not activated, if so do not show.
+		- This will enable the month to be able to be accessed in previous years. 
+		- For instance if I disable wedding for every month now, but I go back to July of 2012 it will show wedding since there were transactions even though the month is not active
+	- When clicking year review, graphs are avail for the total and each category (long time in future)
+	- Able to edit items, change the day of the month and also edit amount/comment
+	- Change Title to Budget My Money
+	- Added all items to display the list of the month items

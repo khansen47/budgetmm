@@ -1,0 +1,355 @@
+body {
+	background-color: #665367;
+	font-size: 13px;
+	font-family: Arial, SunSans-Regular, Sans-Serif;
+	color:#665367;
+}
+
+#container {
+	width: 1800px;
+	margin-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #ccc;
+	padding: 5px;
+	height: 925px;
+}
+
+#content {
+	width: 1500px;
+	background-color: #ffffff;
+	padding: 5px;
+	float: right;
+	height: 854px;
+	overflow: scroll;
+}
+
+#content p {
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+#content p span {
+	float: right;
+}
+
+h2 {
+	font-size: 18pt;
+	text-decoration: underline;
+}
+
+h2 span {
+	font-size: 24pt;
+	padding-left: 10px;
+	text-decoration: none;
+}
+
+h1 span {
+	font-size: 12px;
+}
+
+h1 a {
+	font-size: 12px;
+	float: right;
+	padding-left: 10px;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+#totals {
+	width: 200px;
+	margin-left: 20px;
+}
+
+#totals p
+{
+	font-size: 10pt;
+}
+
+#details {
+	float: left;
+}
+#details table {
+	text-align: center;
+}
+
+#details table th {
+	text-decoration: underline;
+	width: auto;
+	padding: 5px;
+	font-size: 12pt;
+}
+
+#left {
+	float: left;
+	width: 170px;
+	margin: 30px 0 0 0;
+	padding: 0px;
+}
+
+#left h3 {
+	color: #665367;
+}
+
+#left li a {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+#boxes .window {
+  position: absolute;
+  width: 440px;
+  height: 200px;
+  display: none;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.detailed-table {
+	border: 1px solid black;
+	padding: 5px;
+	margin: 35px 0 0 50px;
+	float: left;
+	display: block;
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.detailed-table tr td {
+	padding: 5px;
+}
+
+.detailed-table tr th {
+	padding: 5px;
+}
+
+.detailed-table a {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.detailed-table tr:nth-child(even) {
+	background-color: #C7DDC2;
+}
+
+.detailed-table tr:hover {
+	background-color: #FFF285;
+}
+
+.income-th {
+	color: #8AB381;
+	cursor: pointer;
+}
+
+.expense-th {
+	color: #CF969B;
+	cursor: pointer;
+}
+
+#man-cat {
+	margin-left: 20px;
+	width: 250px;
+	float: left;
+}
+
+#man-cat span{
+	margin-left: 10px;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+#inc-man-cat {
+	float: left;
+	width: 250px;
+}
+
+#inc-man-cat strong{
+	float:right;
+	width: 50%;
+	color: #7CA67E
+}
+
+#exp-man-cat {
+	padding-left: 40px;
+	float: left;
+	width: 250px;
+}
+
+#exp-man-cat strong{
+	float: right;
+	width: 50%;
+	color: #886789;
+}
+
+#overall-man-cat {
+	padding-left: 150px;
+	float: left;
+	width: 250px;
+}
+
+#overall-man-cat strong{
+	float: right;
+	width: 50%;
+	color: #7CA67E;
+}
+
+#quick-add {
+	padding-top: 5px;
+}
+
+.details-expand {
+	float: right;
+	display: block;
+	width: 1000px;
+}
+
+.detailed-div {
+	padding: 5px;
+	margin: 0 0 0 50px;
+	float: left;
+}
+
+#cat-details {
+	font-size: 14px;
+}
+
+.item-graph {
+	float: right;
+}
+
+.detail-item {
+	margin-left: 40px;
+}
+
+.details-date {
+	float: left;
+	width: 30px;
+	text-align: right;
+	padding-right: 10px;
+}
+
+.details-amount {
+	width: 50px;
+	float: left;
+	text-align: right;
+	padding-right: 10px;
+}
+
+.details-comment {
+	float: left;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+.details-total {
+	font-size: 12pt;
+	float: left;
+}
+
+.login-form {
+	margin: 300px auto;
+	width: 500px;
+}
+
+.login-form p {
+	color: red;
+	padding-left: 100px;
+	font-weight: bold;
+}
+
+#login-div {
+	width: 300px;
+	float: left;
+	padding-bottom: 15px;
+	font-size: 14pt;
+}
+
+#login-div span {
+	padding-left: 36px;
+	padding-right: 5px;
+	text-align: right;
+	color: black;
+}
+
+#login-div input {
+	padding: 5px;
+}
+
+#pass-div {
+	float: left;
+	width: 300px;
+	font-size: 14pt;
+}
+
+#pass-div span {
+	color: black;
+	padding-right: 5px;
+}
+
+#pass-div input {
+	padding: 5px;
+}
+
+#submit-div input{
+	padding: 5px;
+}
+
+#submit-div {
+	padding-top: 50px;
+}
+
+#month-select-div {
+	float: right;
+	margin-top: 20px;
+}
+#head-div {
+	float: left;
+}
+
+#income-cats span{
+	margin-left: 10px;
+	cursor: pointer;
+	text-decoration: underline;
+	font-size: 12pt;
+}
+
+#expenses-cats {
+	float: left;
+}
+
+#expenses-cats span{
+	margin-left: 10px;
+	cursor: pointer;
+	text-decoration: underline;
+	font-size: 12pt;
+}
+
+#category-edit {
+	padding-left: 50px;
+	padding-top: 40px;
+	float: left;
+}
+
+#add-cat-months {
+	width: 60px;
+	height: 220px;
+}
+
+.money-td {
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+#all_month_items
+{
+	border: 1px solid black;
+}
+
+#all_month_items tr:nth-child( odd )
+{
+	background-color: #FFF;
+}
+
+#all_month_items tr:nth-child( even )
+{
+	background-color: #C7DDC2;
+}

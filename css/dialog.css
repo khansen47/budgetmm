@@ -1,0 +1,122 @@
+#dialog_overlay  {
+	height:100%;
+	width:100%;
+	background-color: #000;
+	display:none;
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index:9999;
+}
+
+.pop_content {
+	width:400px;
+	z-index:10000;
+	font-size:11px;
+	position:fixed;
+    top:-200px;
+}
+
+.pop_content h2.dialog_title {
+	background: #693E3E;
+	border: 1px solid #693E3E;
+	border-bottom: none;
+	color: white;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0;
+	height:100%;
+}
+
+.pop_content h2 span {
+	display: block;
+	padding: 5px 10px;
+}
+
+.pop_content .dialog_content {
+	background: white;
+	border: 1px solid #555;
+	border-top-width: 0;
+}
+
+.pop_content .dialog_body {
+	padding: 10px;
+	border-bottom: 1px solid #CCC;
+}
+
+.pop_content .dialog_buttons {
+	background: #F2F2F2;
+	padding: 8px 10px 8px 10px;
+	position: relative;
+	text-align: right;
+}
+
+.clearfix {
+	zoom: 1;
+}
+
+.clearfix::after {
+	clear: both;
+	content: ".";
+	display: block;
+	font-size: 0;
+	height: 0;
+	line-height: 0;
+	visibility: hidden;
+}
+
+.uiButtonLarge, .uiButtonLarge .uiButtonText, .uiButtonLarge input {
+	font-size: 13px;
+}
+
+.uiButtonConfirm {
+	background-image: url(../images/dialog.png);
+	background-repeat: no-repeat;
+	background-position: 0 -98px;
+	background-color: #5B74A8;
+	border-color: #29447E #29447E #1A356E;
+}
+
+.uiButton {
+	background-image: url(../images/dialog.png);
+	background-repeat: no-repeat;
+	background-position: 0 -49px;
+	background-color: #EEE;
+	border: 1px solid #999;
+	border-bottom-color: #888;
+	-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+	cursor: pointer;
+	display: -moz-inline-box;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: normal !important;
+	padding: 2px 6px;
+	text-align: center;
+	text-decoration: none;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+#dialog_holder label {
+	cursor: pointer;
+	color: #666;
+	font-weight: bold;
+	vertical-align: middle;
+}
+
+.uiButton .uiButtonText, .uiButton input {
+	background: none;
+	border: 0;
+	color: #333;
+	cursor: pointer;
+	display: -moz-inline-box;
+	display: inline-block;
+	font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	margin: 0;
+	outline: none;
+	padding: 1px 0 2px;
+	white-space: nowrap;
+}
