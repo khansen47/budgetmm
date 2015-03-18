@@ -1,40 +1,27 @@
 <?php
-include_once("../classes/database.php");
-include_once("../classes/functions.php");
-include_once("../classes/layout.php");
+include_once( "../classes/database.php" );
+include_once( "../classes/functions.php" );
+include_once( "../classes/layout.php" );
 
 $database 		= new Database();
+$database2		= new Database2();
 $functions 		= new Functions();
 $layout 		= new Layout();
 
 $layout->session_inc();
 
-$user_info 		= $functions->get_userInfo($_SESSION['login']);
-$cat_id			= $functions->post("cat_id");
+$cat_id 		= Functions::Post_Int( 'cat_id' );
+$month 			= $_SESSION[ 'month' ] ? $_SESSION[ 'month' ] : date( "F" );
+$year			= $_SESSION[ 'year' ] ? $_SESSION[ 'year' ] : date( "Y" );
 
-$cat_sql 		= $database->mysqli->query("SELECT
-												*
-											FROM
-												item
-											WHERE
-												cat_id 			= '".$cat_id."' 			AND
-												MONTHNAME(date) = '".$_SESSION['month']."'	AND
-												YEAR(date)	 	= '".$_SESSION['year']."' 	AND
-												user_id 		= '".$user_info['id']."'
-											ORDER BY
-												date");
+if ( !Functions::User_Load( $database2, $_SESSION[ 'login' ], $user_info ) )
+{
+	header( 'Location: login.php' );
+	die();
+}
 
-$cat_total_sql 	= $database->mysqli->query("SELECT
-												SUM(amount) as total
-											FROM
-												item
-											WHERE
-												cat_id 			= '".$cat_id."' 			AND
-												MONTHNAME(date) = '".$_SESSION['month']."' 	AND
-												YEAR(date)	 	= '".$_SESSION['year']."' 	AND
-												user_id 		= '".$user_info['id']."'");
-
-$cat_total 		= $cat_total_sql->fetch_assoc();
+Functions::ItemList_Load_CategoryAll( $database2, $cat_id, $month, $year, $user_info[ 'id' ], $items );
+Functions::Item_CategoryDate_Total( $database2, $cat_id, $month, $year, $user_info[ 'id' ], $cat_total );
 ?>
 <table class="detailed-table" cat-id="<?php echo $cat_id; ?>">
 	<tr align="left">
@@ -44,18 +31,18 @@ $cat_total 		= $cat_total_sql->fetch_assoc();
 		<th width="5px">Edit</th>
 		<th width="5px">Delete</th>
 	</tr>
-<?php while ($cat_row = $cat_sql->fetch_assoc()) { ?>
+<?php foreach ( $items as $key => $item ) { ?>
 	<tr align="left">
-		<td><?php echo date("jS", strtotime($cat_row['date'])); ?></td>
-		<td><?php echo number_format($cat_row['amount'], 2); ?></td>
-		<td><?php echo $cat_row['comment']; ?></td>
-		<td id="edit-item" item-id="<?php echo $cat_row['id']; ?>"><a>edit</a></td>
-		<td><a id="delete-item" item-id="<?php echo $cat_row['id']; ?>">Delete</a></td>
+		<td><?php echo date("jS", strtotime( $item[ 'date' ] ) ); ?></td>
+		<td><?php echo number_format( $item[ 'amount' ], 2 ); ?></td>
+		<td><?php echo $item[ 'comment' ]; ?></td>
+		<td id="edit-item" item-id="<?php echo $item[ 'id' ]; ?>"><a>edit</a></td>
+		<td><a id="delete-item" item-id="<?php echo $item[ 'id' ]; ?>">Delete</a></td>
 	</tr>
 <?php } ?>
 	<tr align="left">
 		<td>Total:</td>
-		<td><strong>$<?php echo number_format($cat_total['total'], 2); ?></strong></td>
+		<td><strong>$<?php echo number_format( $cat_total[ 'total' ], 2 ); ?></strong></td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
@@ -133,10 +120,10 @@ $cat_total 		= $cat_total_sql->fetch_assoc();
 		</tr>
 		<tr>
 			<td>Spent This Month:</td>
-			<td><b>$ <?php echo number_format($cat_total['total'], 2); ?></b></td>
+			<td><b>$ <?php echo number_format( $cat_total[ 'total' ], 2 ); ?></b></td>
 		</tr>
-		<?php 	$diff_budget = number_format( ($budget-$cat_total['total']), 2 );
-				$diff_avg	 = number_format( (($category_total/$months_used)-$cat_total['total']), 2 );
+		<?php 	$diff_budget = number_format( ( $budget - $cat_total[ 'total' ] ), 2 );
+				$diff_avg	 = number_format( ( ( $category_total / $months_used ) - $cat_total[ 'total' ] ), 2 );
 				if ($diff_budget < 0)	$d_b_style = "style='color: red;'";
 				else					$d_b_style = "style='color:green;'";
 				if ($diff_avg < 0) 		$d_a_style = "style='color: red;'";
@@ -155,19 +142,19 @@ $cat_total 		= $cat_total_sql->fetch_assoc();
 	<?php } else {?>
 		<tr>
 			<td>Yearly Total:</td>
-			<td><b>$ <?php echo number_format( $category_total, 2); ?></b></td>
+			<td><b>$ <?php echo number_format( $category_total, 2 ); ?></b></td>
 		</tr>
 		<tr>
 			<td>Monthly Average:</td>
-			<td><b>$ <?php echo number_format( $category_total/$months_used, 2); ?></b></td>
+			<td><b>$ <?php echo number_format( $category_total / $months_used, 2 ); ?></b></td>
 		</tr>
 		<tr>
 			<td>Earned this Month:</td>
-			<td><b>$ <?php echo number_format($cat_total['total'], 2); ?></b></td>
+			<td><b>$ <?php echo number_format( $cat_total[ 'total' ], 2 ); ?></b></td>
 		</tr>
 		<tr>
 			<td>Difference:</td>
-			<td><b>$ <?php echo number_format( $cat_total['total']-($category_total/$months_used), 2); ?></b></td>
+			<td><b>$ <?php echo number_format( $cat_total[ 'total' ] - ( $category_total / $months_used ), 2 ); ?></b></td>
 		</tr>
 	<?php  } ?>
 	</table>

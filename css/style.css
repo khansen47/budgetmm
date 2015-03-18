@@ -180,7 +180,8 @@ h1 a
 	float: left;
 }
 
-#man-cat span{
+#man-cat span
+{
 	margin-left: 10px;
 	cursor: pointer;
 	text-decoration: underline;

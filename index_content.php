@@ -1,6 +1,11 @@
 <?php
 /*
-	File TODO: Onchange year month, set post variables?
+	File TODO:
+		Onchange year month, set post variables?
+		Iframes?
+		Ajax. change to use the new ajax stuff
+		Categeory Review
+		Year Review, category-> onclick of each month to show the items
 */
 include_once( "classes/database.php" );
 include_once( "classes/functions.php" );
@@ -19,7 +24,7 @@ if ( $year == '' )	$year	= $_SESSION[ 'year' ] ? $_SESSION[ 'year' ] : date( "Y"
 
 $layout->session_inc();
 
-if ( !$functions->User_Load( $database2, $_SESSION[ 'login' ], $user_info ) )
+if ( !Functions::User_Load( $database2, $_SESSION[ 'login' ], $user_info ) )
 {
 	header( 'Location: login.php' );
 	die();
@@ -58,7 +63,7 @@ else							$day = '01';
 						<input type="button"	id="quick-add-submit" 	value="Add"  />
 						<span id="quick-report"></span>
 </div>
-<div style="clear:both;" ></div>
+<div style="clear: both;" ></div>
 <br />
 <br />
 <div id="details">
@@ -68,7 +73,7 @@ else							$day = '01';
 
 		foreach ( $categories as $key => $category )
 		{
-			Functions::Category_MonthYear_Total_Load_ID( $database2, $category[ 'id' ], $user_info[ 'id' ], $month, $year, $cat_total );
+			Functions::Item_CategoryDate_Total( $database2, $category[ 'id' ], $month, $year, $user_info[ 'id' ], $cat_total );
 
 			if ( $category[ 'type_id' ] == 1 )		$class = 'income-th';
 			else if ( $category[ 'type_id' ] == 2 ) $class = 'expense-th';

@@ -90,6 +90,22 @@ class Functions
 	* Helper functions for table item
 	*
 	*/
+	public static function ItemList_Load_CategoryAll( &$db, $cat_id, $month, $year, $user_id, &$items )
+	{
+		return $db->select( "SELECT
+								*
+							 FROM
+								item
+							 WHERE
+								cat_id 				= ? AND
+								MONTHNAME( date )	= ? AND
+								YEAR( date )	 	= ? AND
+								user_id 			= ?
+							 ORDER BY
+								date",
+							 $items, $cat_id, $month, $year, $user_id );
+	}
+
 	public static function ItemList_Load_CatIDAndMonth( &$db, $cat_id, $month, &$items )
 	{
 		return $db->select( "SELECT
@@ -122,11 +138,43 @@ class Functions
 							$total, $user_id, $month, $year, $type_id );
 	}
 
+	public static function Item_CategoryDate_Total( &$db, $cat_id, $month, $year, $user_id, &$total )
+	{
+		return $db->single( "SELECT
+								SUM( amount ) as total
+							 FROM
+								item
+							 WHERE
+								cat_id 				= ? AND
+								MONTHNAME( date )	= ? AND
+								YEAR( date )	 	= ? AND
+								user_id 			= ?",
+							 $total, $cat_id, $month, $year, $user_id );
+	}
+
+	public static function Item_CategoryYear_Total( &$db, $cat_id, $year, $user_id, &$total )
+	{
+		return $db->single( "SELECT
+								SUM( amount ) as total
+							 FROM
+								item
+							 WHERE
+								cat_id 			= ? AND
+								YEAR( date )	= ? AND
+								user_id 		= ?",
+							 $total, $cat_id, $year, $user_id );
+	}
+
 	/*
 	*
 	* Helper functions for table category
 	*
 	*/
+	public static function Category_Load_ID( &$db, $cat_id, &$category )
+	{
+		return $db->single( "SELECT * FROM category WHERE id = ?", $category, $cat_id );
+	}
+
 	public static function CategoryList_Load_Month( &$db, $user_id, $month, $year, &$categories )
 	{
 		$month_int 		= Functions::month_int( $month );
@@ -153,20 +201,6 @@ class Functions
 							 ORDER BY
 							 	type_id, name",
 							$categories, $user_id, $format_date, $format_date, $month_int, $month_int );
-	}
-
-	public static function Category_MonthYear_Total_Load_ID( &$db, $cat_id, $user_id, $month, $year, &$total )
-	{
-		return $db->single( "SELECT
-								SUM( amount ) as total
-							 FROM
-								item
-							 WHERE
-								cat_id 				= ?	AND
-								user_id 			= ?	AND
-								MONTHNAME( date ) 	= ?	AND
-								YEAR( date )		= ?",
-							$total, $cat_id, $user_id, $month, $year );
 	}
 
 	//Helper Functions
@@ -226,7 +260,7 @@ class Functions
 		else							return "00";
 	}
 
-	public function month_string( $month ) {
+	public static function month_string( $month ) {
 		if ($month == 1) 		return "January";
 		elseif ($month == 2) 	return "February";
 		elseif ($month == 3) 	return "March";

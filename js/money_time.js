@@ -1,4 +1,5 @@
-$(document).ready(function() {
+$( document ).ready( function()
+{
 	$(".income-th, .expense-th").live("click", function() {
 		var cat_id = $(this).attr("id");
 		$.ajax({
@@ -134,8 +135,10 @@ $(document).ready(function() {
 		} );
 	} );
 
-	$("#man-cat span").live("click", function() {
-		$.ajax({
+	$("#man-cat span").live( "click", function()
+	{
+		$.ajax(
+		{
 			type: "POST",
 			url: "ajax/year_review_cat.php",
 			data: {"cat_id":$(this).attr("cat-id"), "year":$("#year_review_select").val()},
@@ -145,8 +148,27 @@ $(document).ready(function() {
 			error: function(){
 				alert("error");
 			}
-		});
-	});
+		} );
+	} );
+
+	$("#man-cat-month span").live("click", function()
+	{
+		$.ajax( 
+		{
+			type: 	"POST",
+			url: 	"ajax/year_review_cat.php",
+			data: 	{ "cat_id" : $( "#cat_id" ).val(), "month" : $( this ).attr( "month" ), "year" : $( "#year_review_select" ).val() },
+			success: function( data )
+			{
+				$( "#man-cat-inside" ).html( data );
+			},
+			error: function()
+			{
+				alert("error");
+			}
+		} );
+	} );
+
 
 	$("input:date").dateinput({ trigger: true, format: 'mmmm dd, yyyy'});
 
@@ -463,4 +485,4 @@ $(document).ready(function() {
 			});
 		}
 	});
-});
+} );

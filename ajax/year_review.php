@@ -1,15 +1,22 @@
 <?php
-include_once("../classes/database.php");
-include_once("../classes/functions.php");
-include_once("../classes/layout.php");
-$database = new Database();
-$function = new Functions();
-$layout = new Layout();
+include_once( "../classes/database.php" );
+include_once( "../classes/functions.php" );
+include_once( "../classes/layout.php" );
+
+$database 	= new Database();
+$database2 	= new Database2();
+$function 	= new Functions();
+$layout 	= new Layout();
 
 $layout->session_inc();
 
-$user_info 			= $function->get_userInfo($_SESSION['login']);
-$year				= $function->post("year");
+$year		= Functions::Post_Int( 'year' );
+
+if ( !Functions::User_Load( $database2, $_SESSION[ 'login' ], $user_info ) )
+{
+	header( 'Location: login.php' );
+	die();
+}
 
 if ( $year == '' )
 {
