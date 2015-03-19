@@ -3,7 +3,6 @@ include_once( "../classes/database.php" );
 include_once( "../classes/functions.php" );
 include_once( "../classes/layout.php" );
 
-$database 	= new Database();
 $database2 	= new Database2();
 $function 	= new Functions();
 $layout 	= new Layout();
@@ -46,7 +45,7 @@ $diff 		= $category[ 'budget' ] - number_format( ( $cat_year_total[ 'total' ] / 
 			$month_name = Functions::month_string( $i );
 
 			Functions::Item_CategoryDate_Total( $database2, $cat_id, $month_name, $year, $user_info[ 'id' ], $month_total );
-			
+
 			$month_total = $month_total[ 'total' ] ? $month_total[ 'total' ] : 0;
 
 			if ( Functions::month_int( $_SESSION[ 'month' ] ) == $i )	echo "<span style='cursor: pointer; text-decoration: underline;' month='".$month_name."'><b>".$month_name."</b>";
@@ -82,10 +81,7 @@ $diff 		= $category[ 'budget' ] - number_format( ( $cat_year_total[ 'total' ] / 
 <?php } ?>
 	<tr align="left">
 		<td>Total:</td>
-		<td><strong>$<?php echo number_format( $cat_total[ 'total' ], 2 ); ?></strong></td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
+		<td colspan="4"><strong>$<?php echo number_format( $cat_total[ 'total' ], 2 ); ?></strong></td>
 	</tr>
 </table>
 <?php } ?>

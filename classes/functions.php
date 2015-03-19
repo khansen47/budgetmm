@@ -90,6 +90,21 @@ class Functions
 	* Helper functions for table item
 	*
 	*/
+	public static function ItemList_Load_Date( &$db, $month, $year, $user_id, &$items )
+	{
+		return $db->select( "SELECT
+								*
+							 FROM
+								item
+							 WHERE
+								MONTHNAME( date )	= ? AND
+								YEAR( date )	 	= ? AND
+								user_id 			= ?
+							 ORDER BY
+								date",
+							 $items, $month, $year, $user_id );
+	}
+
 	public static function ItemList_Load_CategoryAll( &$db, $cat_id, $month, $year, $user_id, &$items )
 	{
 		return $db->select( "SELECT
@@ -111,7 +126,7 @@ class Functions
 		return $db->select( "SELECT
 								SUM( amount ) as day_amount,
 								DAY( date ) as day
-							 FROM 
+							 FROM
 								item
 							 WHERE
 								cat_id 				= ? AND
@@ -170,6 +185,18 @@ class Functions
 	* Helper functions for table category
 	*
 	*/
+	public static function Category_Update_ID( &$db, $category )
+	{
+		return $db->query( "UPDATE
+								category
+							SET
+								name = ?, type_id = ?, budget = ?, start_date = ?, end_date = ?, last_updated = NOW()
+							WHERE
+								id = ?",
+							$category[ 'name' ], $category[ 'type_id' ], $category[ 'budget' ], $category[ 'start_date' ], $category[ 'end_date' ],
+							$category[ 'id' ] );
+	}
+
 	public static function Category_Load_ID( &$db, $cat_id, &$category )
 	{
 		return $db->single( "SELECT * FROM category WHERE id = ?", $category, $cat_id );
@@ -413,6 +440,6 @@ class Functions
 		return $uid_q->fetch_assoc();
 	}
 
-	
+
 }
 ?>

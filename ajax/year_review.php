@@ -40,22 +40,22 @@ $cat_select			= $database->mysqli->query("SELECT
 												ORDER BY
 													type_id, name");
 
-$totals 			= $database->mysqli->query("SELECT 
-													SUM(i.amount) as income_tot, 
+$totals 			= $database->mysqli->query("SELECT
+													SUM(i.amount) as income_tot,
 													(
-														SELECT 
-															SUM(i.amount) as exp_tot 
-														FROM 
-															item i 
-														WHERE 
-															i.user_id 		= '".$user_info['id']."' 								AND 
+														SELECT
+															SUM(i.amount) as exp_tot
+														FROM
+															item i
+														WHERE
+															i.user_id 		= '".$user_info['id']."' 								AND
 															EXISTS (SELECT id FROM category WHERE type_id = '2' AND id = i.cat_id)".
 															$year_clause.
-												   ") as exp_tot 
-												FROM 
-													item i 
-												WHERE 
-													i.user_id 		= '".$user_info['id']."' 								AND 
+												   ") as exp_tot
+												FROM
+													item i
+												WHERE
+													i.user_id 		= '".$user_info['id']."' 								AND
 													EXISTS (SELECT id FROM category WHERE type_id = '1' AND id = i.cat_id)".
 													$year_clause);
 
@@ -75,12 +75,12 @@ while ($cat = $cat_select->fetch_assoc()) {
 $month_count = 1;
 
 while ($month_count <= 12) {
-	$month_total_income = $database->mysqli->query("SELECT 
-														COALESCE( sum( amount ), 0 ) as i_amount 
-													FROM 
-														item 
-													WHERE 
-														user_id 	= '".$user_info['id']."' 	AND 
+	$month_total_income = $database->mysqli->query("SELECT
+														COALESCE( sum( amount ), 0 ) as i_amount
+													FROM
+														item
+													WHERE
+														user_id 	= '".$user_info['id']."' 	AND
 														MONTH(date) = ".$month_count."
 														".$year_clause. "AND
 														EXISTS (SELECT id FROM category WHERE type_id = 1 AND id = cat_id)");
@@ -93,12 +93,12 @@ while ($month_count <= 12) {
 $month_count = 1;
 
 while ($month_count <= 12) {
-	$month_total_expense = $database->mysqli->query("SELECT 
-														COALESCE( sum(amount), 0 ) as i_amount 
-													FROM 
-														item 
-													WHERE 
-														user_id 	= '".$user_info['id']."' 	AND 
+	$month_total_expense = $database->mysqli->query("SELECT
+														COALESCE( sum(amount), 0 ) as i_amount
+													FROM
+														item
+													WHERE
+														user_id 	= '".$user_info['id']."' 	AND
 														MONTH(date) = ".$month_count."
 														".$year_clause. "AND
 														EXISTS (SELECT id FROM category WHERE type_id = 2 AND id = cat_id)");
@@ -112,7 +112,7 @@ if ($year != date("Y"))
 	$month_num = 12;
 else
 	$month_num = date("m");
-	
+
 ?>
 <h1>Review of <?php echo $year; ?></h1>
 <div style="float: right; margin-top: -50px;"><select id="year_review_select"><?php echo $function->year_review_options( $year ); ?></select></div>
@@ -124,7 +124,7 @@ else
 	<div id="inc-man-cat">
 		<p>Income</p>
 		<span style="font-size: 14pt;">Yearly Total: <strong>$ <?php echo number_format($total_assoc['income_tot'], 2); ?></strong></span><br /><br />
-		<span>Average: 
+		<span>Average:
 			<strong style="font-size:12pt;">
 				$ <?php echo number_format(($total_assoc['income_tot']/$month_num), 2); ?>
 			</strong>
@@ -135,7 +135,7 @@ else
 	<div id="exp-man-cat">
 		<p>Expenses</p>
 		<span style="font-size: 14pt;">Yearly Total: <strong>$ <?php echo number_format($total_assoc['exp_tot'], 2); ?></strong></span><br /><br />
-		<span>Average: 
+		<span>Average:
 			<strong style="font-size:12pt;">
 				$ <?php echo number_format(($total_assoc['exp_tot']/$month_num), 2); ?>
 			</strong>
@@ -145,30 +145,30 @@ else
 	</div>
 	<div id="overall-man-cat">
 		<p>Overall</p>
-		<?php 
+		<?php
 			$tot_col = (($total_assoc['income_tot']-$total_assoc['exp_tot']) > 0) ? "#7CA67E" : "#886789";
 			$avg_col = ((($total_assoc['income_tot']-$total_assoc['exp_tot'])/$month_num) > 0) ? "#7CA67E" : "#886789";
 		?>
-		<span style="font-size: 14pt;">Yearly Total: 
+		<span style="font-size: 14pt;">Yearly Total:
 			<strong style="color:<?php echo $tot_col; ?>;">
 				$ <?php echo number_format(($total_assoc['income_tot']-$total_assoc['exp_tot']), 2); ?>
 			</strong>
 		</span><br /><br />
-			<span>Average: 
+			<span>Average:
 				<strong style="font-size:12pt;color:<?php echo $avg_col; ?>;">
 					$ <?php echo number_format((($total_assoc['income_tot']-$total_assoc['exp_tot'])/$month_num), 2); ?>
 				</strong>
 			</span>
 			<div style="border-bottom:1px solid black;width:240px;">&nbsp;</div><br />
 		<?php
-		
+
 		for ($i=1; $i <= 12; $i++) {
 			$tot = number_format(($income_arr[$i] - $expense_arr[$i]), 2);
 			$color = ($tot > 0) ? "#7CA67E" : "#886789";
 			echo "<span>".$function->month_string($i).": <strong style='font-size:12pt;color:".$color."'>$ ".$tot."</strong><span></p>";
 		}
 		?>
-	</div>	
+	</div>
 	<div align='center'>
 		<img src="graphs/year_bar_graph.php" />
 	</div>

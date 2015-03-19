@@ -1,5 +1,11 @@
 $( document ).ready( function()
 {
+
+
+
+
+
+	//OLDER JavaScript Code
 	$(".income-th, .expense-th").live("click", function() {
 		var cat_id = $(this).attr("id");
 		$.ajax({
@@ -78,7 +84,7 @@ $( document ).ready( function()
 	$("#all-items").bind("click", function() {
 		$.ajax({
 			type: "POST",
-			url: "ajax/all_items.php",
+			url: "ajax/all_month_items.php",
 			data: "",
 			success: function(data){
 				$("#content").html(data);
@@ -119,7 +125,7 @@ $( document ).ready( function()
 
 	$( "#manage_auto" ).bind( "click", function()
 	{
-		$.ajax( 
+		$.ajax(
 		{
 			type: "POST",
 			url: "ajax/manage_auto.php",
@@ -153,7 +159,7 @@ $( document ).ready( function()
 
 	$("#man-cat-month span").live("click", function()
 	{
-		$.ajax( 
+		$.ajax(
 		{
 			type: 	"POST",
 			url: 	"ajax/year_review_cat.php",
@@ -215,7 +221,7 @@ $( document ).ready( function()
 				success: function(data){
 					$.ajax({
 						type: "POST",
-						url: "index_content.php",
+						url: "index.php",
 						data: "",
 						success: function(data){
 							$("#content_details").html(data);

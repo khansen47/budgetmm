@@ -5,13 +5,11 @@
 		Iframes?
 		Ajax. change to use the new ajax stuff
 		Categeory Review
-		Year Review, category-> onclick of each month to show the items
 */
 include_once( "classes/database.php" );
 include_once( "classes/functions.php" );
 include_once( "classes/layout.php" );
 
-$database 		= new Database();
 $database2		= new Database2();
 $functions 		= new Functions();
 $layout 		= new Layout();
@@ -21,8 +19,6 @@ $year  = Functions::Post_Int( 'Year' );
 
 if ( $month == '' ) $month 	= $_SESSION[ 'month' ] ? $_SESSION[ 'month' ] : date( "F" );
 if ( $year == '' )	$year	= $_SESSION[ 'year' ] ? $_SESSION[ 'year' ] : date( "Y" );
-
-$layout->session_inc();
 
 if ( !Functions::User_Load( $database2, $_SESSION[ 'login' ], $user_info ) )
 {

@@ -1,21 +1,19 @@
-<div id="dialog_overlay"></div>
-<div id="overlay"></div>
-<div id="overlay_text"></div>
-<!-- Dialog Popup -->
-<div class="pop_content">
-	<h2 class="dialog_title"><span id="dialog_title"></span></h2>
-	<div class="dialog_content">
-		<div id="dialog_body" class="dialog_body"></div>
-		<div class="dialog_buttons clearfix">
-			<label class="uiButton uiButtonLarge uiButtonConfirm">
-				<input id="dialog_confirm" name="button1" type="button" />
-			</label>
-			<label class="uiButton uiButtonLarge uiButtonConfirm" style="display:none;">
-				<input id="dialog_cancel" name="button2" type="button" />
-			</label>
+			</div>
+			<div class="details-expand"></div>
+		</div>
+
+		<div id="left">
+			<h3><a href="index.php" style="color:#80696B;">Home<a></h3>
+			<ul>
+				<li><a id="year-review">Year Review</a></li>
+				<li><a id="manage-cats">Edit Categories</a></li>
+				<li><a id="manage_auto">Edit Reaccuring Bills</a></li>
+				<li><a id="all-items">Month Items</a></li>
+				<li><a id="month_report">Month Report</a></li>
+				<li><a id="all-years">Overall Account</a></li>
+			</ul>
 		</div>
 	</div>
-</div>
-<!-- End Dialog Popup -->
-</body>
+
+	</body>
 </html>
