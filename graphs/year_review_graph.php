@@ -4,26 +4,31 @@ require_once("../jpgraph/src/jpgraph_line.php");
 require_once("../jpgraph/src/jpgraph_bar.php");
 include_once("../classes/database.php");
 include_once("../classes/functions.php");
-include_once("../classes/layout.php");
+include_once( "../classes/layout.php" );
+
 $database 	= new Database();
+$database2 	= new Database2();
 $function 	= new Functions();
 $layout 	= new Layout();
 
 $layout->session_inc();
-$user_info = $function->get_userInfo($_SESSION['login']);
 
-$cat_id	= $_GET["cat_id"];
-$budget	= $_GET["budget"];
-$avg	= $_GET["avg"];
+$cat_id		= Functions::Get_Int( 'Cat_ID' );
+$year  		= Functions::Get_Int( 'Year' );
+$budget		= Functions::Get( 'Budget' );
+$avg		= Functions::Get( 'Average' );
 
-$ydata 	= array(0,0,0,0,0,0,0,0,0,0,0,0);
-$bdata	= array($budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget);
-$adata	= array($avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg);
+Functions::Validate_User( $database2, $user_info );
+Functions::Validate_MonthYear( $null, $year );
+
+$ydata 	= array( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+$bdata	= array( $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget, $budget );
+$adata	= array( $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg, $avg );
 
 $query 	= "SELECT
 			SUM(amount) as month_amount,
 			MONTH(date) as month
-		   FROM 
+		   FROM
 			item
 		   WHERE
 			cat_id 			= ? AND
@@ -31,8 +36,8 @@ $query 	= "SELECT
 		   GROUP BY
 			MONTH(date)";
 $item_list = $database->mysqli->prepare($query);
-$item_list->bind_param("is", $cat_id, $_SESSION['year']);
-$item_list->bind_result($month_amount, $month);
+$item_list->bind_param( "is", $cat_id, $year );
+$item_list->bind_result( $month_amount, $month );
 $item_list->execute();
 
 while($item_list->fetch()) {

@@ -4,24 +4,29 @@ require_once("../jpgraph/src/jpgraph_bar.php");
 include_once("../classes/database.php");
 include_once("../classes/functions.php");
 include_once("../classes/layout.php");
+$database2 	= new Database2();
 $database 	= new Database();
 $function 	= new Functions();
 $layout 	= new Layout();
 
 $layout->session_inc();
-$user_info = $function->get_userInfo($_SESSION['login']);
+
+$year  	= Functions::Get_Int( 'Year' );
+
+Functions::Validate_User( $database2, $user_info );
+Functions::Validate_MonthYear( $null, $year );
 
 $month_count = 1;
 
 while ($month_count <= 12) {
-	$month_total_income = $database->mysqli->query("SELECT 
-														COALESCE( sum(amount), 0 ) as i_amount 
-													FROM 
-														item 
-													WHERE 
-														user_id 	= '".$user_info['id']."' 	AND 
-														MONTH(date) = ".$month_count." 			AND 
-														YEAR(date) 	= '".$_SESSION['year']."'	AND
+	$month_total_income = $database->mysqli->query("SELECT
+														COALESCE( sum(amount), 0 ) as i_amount
+													FROM
+														item
+													WHERE
+														user_id 	= '".$user_info['id']."' 	AND
+														MONTH(date) = ".$month_count." 			AND
+														YEAR(date) 	= '".$year."'	AND
 														EXISTS (SELECT id FROM category WHERE type_id = 1 AND id = cat_id)");
 	$temp 								= $month_total_income->fetch_assoc();
 	$income_arr[ $month_count - 1 ] 	= ( float )$temp['i_amount'];
@@ -31,14 +36,14 @@ while ($month_count <= 12) {
 $month_count = 1;
 
 while ($month_count <= 12) {
-	$month_total_expense = $database->mysqli->query("SELECT 
-														COALESCE( sum(amount), 0 ) as i_amount 
-													FROM 
-														item 
-													WHERE 
-														user_id 	= '".$user_info['id']."' 	AND 
-														MONTH(date) = ".$month_count." 			AND 
-														YEAR(date) 	= '".$_SESSION['year']."'	AND
+	$month_total_expense = $database->mysqli->query("SELECT
+														COALESCE( sum(amount), 0 ) as i_amount
+													FROM
+														item
+													WHERE
+														user_id 	= '".$user_info['id']."' 	AND
+														MONTH(date) = ".$month_count." 			AND
+														YEAR(date) 	= '".$year."'	AND
 														EXISTS (SELECT id FROM category WHERE type_id = 2 AND id = cat_id)");
 	$temp 								= $month_total_expense->fetch_assoc();
 	$expense_arr[ $month_count - 1 ] 	= ( float )$temp['i_amount'];

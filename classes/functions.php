@@ -73,6 +73,31 @@ class Functions
 		return trim( $v );
 	}
 
+	public static function Validate_User( &$db, &$user )
+	{
+		if ( !Functions::User_Load( $db, $_SESSION[ 'login' ], $user ) )
+		{
+			header( 'Location: login.php' );
+			die();
+		}
+	}
+
+	public static function Validate_MonthYear( &$month, &$year )
+	{
+		$month 	= $month ? $month : date( "F" );
+		$year	= $year ? $year : date( "Y" );
+
+		if ( Functions::month_int( $month ) == '00' )	$month = date( "F" );
+
+		for ( $i = 2012; $i <= date( "Y" ) + 1; $i++ )
+		{
+			if ( $year == $i )
+				return;
+		}
+
+		$year = date( "Y" );
+	}
+
 	//New Functions
 
 	/*
@@ -180,6 +205,34 @@ class Functions
 							 $total, $cat_id, $year, $user_id );
 	}
 
+	public static function Item_CategoryYearLessMonth_Total( &$db, $cat_id, $month, $year, $user_id, &$total )
+	{
+		return $db->single( "SELECT
+								SUM( amount ) as total
+							 FROM
+								item
+							 WHERE
+								cat_id 			= ? 	AND
+								MONTH( date )	<= ? 	AND
+								YEAR( date )	= ? 	AND
+								user_id 		= ?",
+							 $total, $cat_id, $month, $year, $user_id );
+	}
+
+	public static function Item_Date_Total( &$db, $month, $year, $user_id, &$total )
+	{
+		return $db->single( "SELECT
+								SUM( amount ) as total
+							 FROM
+								item
+							 WHERE
+								MONTHNAME( date )	= ? AND
+								YEAR( date )	 	= ? AND
+								user_id 			= ? AND
+								EXISTS ( SELECT id FROM category WHERE type_id = 1 AND id = cat_id )",
+							 $total, $month, $year, $user_id );
+	}
+
 	/*
 	*
 	* Helper functions for table category
@@ -200,6 +253,19 @@ class Functions
 	public static function Category_Load_ID( &$db, $cat_id, &$category )
 	{
 		return $db->single( "SELECT * FROM category WHERE id = ?", $category, $cat_id );
+	}
+
+	public static function CategoryList_Load_All( &$db, $user_id, &$categories )
+	{
+		return $db->select( "SELECT
+								*
+							 FROM
+								category
+							 WHERE
+								user_id		= ?	AND
+								deprecated	= 0
+							 ORDER BY
+								type_id, name", $categories, $user_id );
 	}
 
 	public static function CategoryList_Load_Month( &$db, $user_id, $month, $year, &$categories )
@@ -231,7 +297,38 @@ class Functions
 	}
 
 	//Helper Functions
-	public function get_months( $month )
+	public static function Output_TopHeader( $username )
+	{
+		echo '<h1>Budget My Money <span style="float:right;"><a href="logout.php">logout</a>Welcome, ' . $username . ' -</span></h1>';
+	}
+
+	public static function Output_LeftNavigation( $month, $year )
+	{
+		$month_year				= '?Month=' . $month . '&Year=' . $year;
+
+		$home_link		  		= 'index.php' 			. $month_year;
+		$year_review_link 		= 'year_review.php' 	. $month_year;
+		$month_items_link 		= 'all_month_items.php' . $month_year;
+		$month_report_link		= 'month_report.php' 	. $month_year;
+		$edit_categories_link	= 'manage_cats.php' 	. $month_year;
+		$edit_bills_link		= '';
+		$overal_account_link	= '';
+
+		//<li><a id="manage_auto">Edit Reaccuring Bills</a></li>
+
+		echo '<div id="left">
+				<h3><a href="' . $home_link . '" style="color:#80696B;">Home<a></h3>
+				<ul>
+					<li><a href="' . $year_review_link 		. '">Year Review</a></li>
+					<li><a href="' . $edit_categories_link	. '">Edit Categories</a></li>
+					<li><a href="' . $month_items_link 		. '">Month Items</a></li>
+					<li><a href="' . $month_report_link 	. '">Month Report</a></li>
+					<li><a id="all-years">Overall Account</a></li>
+				</ul>
+			  </div>';
+	}
+
+	public static function get_months( $month )
 	{
 		$month_names 	= array( "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" );
 		$months 		= "<select id='month-select'>";
@@ -251,20 +348,24 @@ class Functions
 		return $months;
 	}
 
-	public function get_years($year) {
-		$year_select = "<select id='year-select'>";
-		for ($i = 2012; $i <= date("Y", strtotime("+1 years")); $i++) {
-			$year_select .= "<option";
-			if ($i == $year)
-				$year_select .= " selected='selected'";
+	public static function get_years( $year )
+	{
+		echo "<select id='year-select'>";
 
-			$year_select .= ">".$i."</option>";
+		for ( $i = 2012; $i <= date( "Y", strtotime( "+1 years" ) ); $i++ )
+		{
+			echo "<option";
+
+			if ( $i == $year )
+				echo " selected='selected'";
+
+			echo ">" . $i . "</option>";
 		}
-		$year_select .= "</select>";
-		return $year_select;
+
+		echo "</select>";
 	}
 
-	public function set_dateInput($month, $year) {
+	public static function set_dateInput($month, $year) {
 		if ($month == date("F") && $year == date("Y"))
 			return $month." ".date("d").", ".$year;
 		else
@@ -303,7 +404,7 @@ class Functions
 		else					return "";
 	}
 
-	public function month_string_short( $month )
+	public static function month_string_short( $month )
 	{
 		if ($month == 1) 		return "Jan";
 		elseif ($month == 2) 	return "Feb";
@@ -320,7 +421,7 @@ class Functions
 		else					return "";
 	}
 
-	public function month_options( $month )
+	public static function month_options( $month )
 	{
 		$month_option = '<option value="00">*</option>';
 
@@ -339,11 +440,11 @@ class Functions
 		return $month_option;
 	}
 
-	public function year_options( $year )
+	public static function year_options( $year )
 	{
 		$year_options = '<option value="0000">*</option>';
 
-		for ( $i = date("Y", strtotime("-2 years")); $i <= date("Y", strtotime("+2 years")); $i++ )
+		for ( $i = 2012; $i <= date("Y", strtotime("+2 years")); $i++ )
 		{
 			$year_options .= '<option';
 
@@ -358,10 +459,8 @@ class Functions
 		return $year_options;
 	}
 
-	public function year_review_options( $year )
+	public static function year_review_options( $year )
 	{
-		$year_options = '<option value="all">All Years</option>';
-
 		for ($i = 2012; $i <= date("Y", strtotime("+2 years")); $i++)
 		{
 			$year_options .= '<option';

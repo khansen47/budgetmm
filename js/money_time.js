@@ -53,38 +53,10 @@ $( document ).ready( function()
 		});
 	});
 
-	$("#year-review").bind("click", function() {
-		$.ajax({
-			type: "POST",
-			url: "ajax/year_review.php",
-			data: "",
-			success: function(data){
-				$("#content").html(data);
-			},
-			error: function(){
-				alert("error");
-			}
-		});
-	});
-
 	$("#all-years").bind("click", function() {
 		$.ajax({
 			type: "POST",
 			url: "ajax/all_years.php",
-			data: "",
-			success: function(data){
-				$("#content").html(data);
-			},
-			error: function(){
-				alert("error");
-			}
-		});
-	});
-
-	$("#all-items").bind("click", function() {
-		$.ajax({
-			type: "POST",
-			url: "ajax/all_month_items.php",
 			data: "",
 			success: function(data){
 				$("#content").html(data);
@@ -122,59 +94,6 @@ $( document ).ready( function()
 			}
 		});
 	});
-
-	$( "#manage_auto" ).bind( "click", function()
-	{
-		$.ajax(
-		{
-			type: "POST",
-			url: "ajax/manage_auto.php",
-			data: "",
-			success: function(data)
-			{
-				$("#content").html(data);
-			},
-			error: function()
-			{
-				alert("error");
-			}
-		} );
-	} );
-
-	$("#man-cat span").live( "click", function()
-	{
-		$.ajax(
-		{
-			type: "POST",
-			url: "ajax/year_review_cat.php",
-			data: {"cat_id":$(this).attr("cat-id"), "year":$("#year_review_select").val()},
-			success: function(data){
-				$("#man-cat-inside").html(data);
-			},
-			error: function(){
-				alert("error");
-			}
-		} );
-	} );
-
-	$("#man-cat-month span").live("click", function()
-	{
-		$.ajax(
-		{
-			type: 	"POST",
-			url: 	"ajax/year_review_cat.php",
-			data: 	{ "cat_id" : $( "#cat_id" ).val(), "month" : $( this ).attr( "month" ), "year" : $( "#year_review_select" ).val() },
-			success: function( data )
-			{
-				$( "#man-cat-inside" ).html( data );
-			},
-			error: function()
-			{
-				alert("error");
-			}
-		} );
-	} );
-
 
 	$("input:date").dateinput({ trigger: true, format: 'mmmm dd, yyyy'});
 
@@ -491,4 +410,88 @@ $( document ).ready( function()
 			});
 		}
 	});
+
+
+/*
+	$("#man-cat span").live( "click", function()
+	{
+		$.ajax(
+		{
+			type: "POST",
+			url: "ajax/year_review_cat.php",
+			data: {"cat_id":$(this).attr("cat-id"), "year":$("#year_review_select").val()},
+			success: function(data){
+				$("#man-cat-inside").html(data);
+			},
+			error: function(){
+				alert("error");
+			}
+		} );
+	} );
+
+	$("#man-cat-month span").live("click", function()
+	{
+		$.ajax(
+		{
+			type: 	"POST",
+			url: 	"ajax/year_review_cat.php",
+			data: 	{ "cat_id" : $( "#cat_id" ).val(), "month" : $( this ).attr( "month" ), "year" : $( "#year_review_select" ).val() },
+			success: function( data )
+			{
+				$( "#man-cat-inside" ).html( data );
+			},
+			error: function()
+			{
+				alert("error");
+			}
+		} );
+	} );
+
+	$("#year-review").bind("click", function() {
+		$.ajax({
+			type: "POST",
+			url: "ajax/year_review.php",
+			data: "",
+			success: function(data){
+				$("#content").html(data);
+			},
+			error: function(){
+				alert("error");
+			}
+		});
+	});
+
+	$( "#manage_auto" ).bind( "click", function()
+	{
+		$.ajax(
+		{
+			type: "POST",
+			url: "ajax/manage_auto.php",
+			data: "",
+			success: function(data)
+			{
+				$("#content").html(data);
+			},
+			error: function()
+			{
+				alert("error");
+			}
+		} );
+	} );
+
+	$("#all-items").bind("click", function() {
+		$.ajax({
+			type: "POST",
+			url: "ajax/all_month_items.php",
+			data: "",
+			success: function(data){
+				$("#content").html(data);
+			},
+			error: function(){
+				alert("error");
+			}
+		});
+	});
+
+*/
 } );
