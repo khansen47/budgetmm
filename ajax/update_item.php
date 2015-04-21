@@ -1,4 +1,5 @@
 <?php
+//TODO REMOVE FILE
 include_once("../classes/database.php");
 include_once("../classes/functions.php");
 include_once("../classes/layout.php");
@@ -28,11 +29,11 @@ if (!$check_item->execute()) {
 } else {
 	if ($check_item->num_rows > 0) {
 		$return['error'] = true;
-		$return['message'] = "That item does not belong to you, stop hacking";	
-		$check_item->close();		
+		$return['message'] = "That item does not belong to you, stop hacking";
+		$check_item->close();
 	} else {
 		$check_item->close();
-		
+
 		//Check Date
 		if ($day >= 1 && $day <= 31) {
 			$item_day = $_SESSION['year']."-".$function->month_int($_SESSION['month'])."-".$day;
@@ -40,7 +41,7 @@ if (!$check_item->execute()) {
 			$return['error'] 	= true;
 			$return['message'] 	= "Error: Day is not a correct input";
 		}
-		
+
 		//Check Amount
 		if (!is_numeric($amount)) {
 			$return['error'] 	= true;
@@ -48,11 +49,11 @@ if (!$check_item->execute()) {
 		} else if ($amount < 0.00) {
 			$return['error'] 	= true;
 			$return['message'] 	= "Error: Amount cannot be negative";
-		}	
-		
+		}
+
 		if ($return['error'] == true)
 			die(json_encode($return));
-		
+
 		$update_item = $database->mysqli->prepare("UPDATE item SET date = ?, amount = ?, comment = ?, cat_id = ? WHERE id = ? AND user_id = ?");
 		$update_item->bind_param("sdsiii", $item_day, $amount, $comment, $cat_id, $item_id, $user_info['id']);
 		if (!$update_item->execute()) {
@@ -60,7 +61,7 @@ if (!$check_item->execute()) {
 			$return['message'] = "Error: (" . $update_item->errno . ") ".$update_item->error;
 		}
 		$update_item->close();
-	}	
+	}
 }
 
 die(json_encode($return));

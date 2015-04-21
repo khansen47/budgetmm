@@ -98,6 +98,19 @@ class Functions
 		$year = date( "Y" );
 	}
 
+	public static function Validate_Category( &$db, &$cat_id )
+	{
+		if ( !Functions::Category_Load_ID( $db, $cat_id, $category ) )
+		{
+			if ( !Functions::Category_Load_Default( $db, $category ) )
+			{
+				die( 'fail' );
+			}
+
+			$cat_id = $category[ 'id' ];
+		}
+	}
+
 	//New Functions
 
 	/*
@@ -115,6 +128,39 @@ class Functions
 	* Helper functions for table item
 	*
 	*/
+	public static function Item_Insert( &$db, $item )
+	{
+		return $db->query( 'INSERT INTO item
+							( cat_id, user_id, amount, date, comment )
+							VALUES
+							( ?, ?, ?, ?, ? )',
+							$item[ 'cat_id' ], $item[ 'user_id' ], $item[ 'amount' ], $item[ 'date' ], $item[ 'comment' ] );
+	}
+
+	public static function Item_Update( &$db, $item )
+	{
+		return $db->query( 'UPDATE item
+							SET
+								cat_id 	= ?,
+								amount 	= ?,
+								date 	= ?,
+								comment = ?
+							WHERE
+								id 		= ?',
+							$item[ 'cat_id' ], $item[ 'amount' ], $item[ 'date' ], $item[ 'comment' ],
+							$item[ 'id' ] );
+	}
+
+	public static function Item_Delete( &$db, $id )
+	{
+		return $db->query( 'DELETE FROM item WHERE id = ?', $id );
+	}
+
+	public static function Item_Load_ID( &$db, $id, &$item )
+	{
+		return $db->single( 'SELECT * FROM item WHERE id = ?', $item, $id );
+	}
+
 	public static function ItemList_Load_Date( &$db, $month, $year, $user_id, &$items )
 	{
 		return $db->select( "SELECT
@@ -255,6 +301,11 @@ class Functions
 		return $db->single( "SELECT * FROM category WHERE id = ?", $category, $cat_id );
 	}
 
+	public static function Category_Load_Default( &$db, &$cat_id )
+	{
+		return $db->single( "SELECT id FROM category WHERE type_id = 1 ORDER BY name", $cat_id );
+	}
+
 	public static function CategoryList_Load_All( &$db, $user_id, &$categories )
 	{
 		return $db->select( "SELECT
@@ -297,6 +348,11 @@ class Functions
 	}
 
 	//Helper Functions
+	public static function isCurrency( $number )
+	{
+	  return preg_match( "/^-?[0-9]+(?:\.[0-9]{1,2})?$/", $number );
+	}
+
 	public static function Output_TopHeader( $username )
 	{
 		echo '<h1>Budget My Money <span style="float:right;"><a href="logout.php">logout</a>Welcome, ' . $username . ' -</span></h1>';
@@ -326,6 +382,60 @@ class Functions
 					<li><a id="all-years">Overall Account</a></li>
 				</ul>
 			  </div>';
+	}
+
+	public static function Output_ChangeDate_Form( $page, $month, $year, $parameters = [] )
+	{
+		echo '<form action="' . $page . '" method="get" id="change_date_form">
+				Date: ' . Functions::Month_Select( $month ) . Functions::Year_Select( $year );
+
+				foreach ( $parameters as $key => $parameter )
+				{
+					echo '<input type="hidden" name="' . $key .'" value="' . $parameter .'" />';
+				}
+
+		echo '</form>';
+	}
+
+	public static function Category_Draw_FormSelect( &$db, $user_id, $cat_id, $month, $year )
+	{
+		Functions::CategoryList_Load_All( $db, $user_id, $categories );
+
+		$first 		= 1;
+		$options 	= "<form action='index.php' method='get' id='change_category_form'>
+							<b>Quick Add:</b>
+							<select name='Category_ID' id='quick-type'>
+								<option disabled='disabled'>Income</option>";
+
+		foreach ( $categories as $key => $category )
+		{
+			if ( $category[ 'type_id' ] == 2 )
+			{
+				if ( $first == 1 )
+				{
+					$options 	.= "<option disabled='disabled'>&nbsp;</option>";
+					$options 	.= "<option disabled='disabled'>Expenses</option>";
+				}
+
+				$first 			= 0;
+			}
+
+			$options 			.= "<option id='".$category[ 'id' ]. "' value='".$category[ 'id' ]."'";
+
+			if ( $category[ 'id' ] == $cat_id )
+			{
+				$options		.= ' selected';
+			}
+
+			$options			.= ">&nbsp;".$category[ 'name' ]."</option>";
+		}
+
+		$options .= '</select>
+					<input type="hidden" name="Month" value="' . $month . '" />
+					<input type="hidden" name="Year" value="' . $year . '" />
+				</form>';
+
+		return $options;
 	}
 
 	public static function get_months( $month )
@@ -363,6 +473,45 @@ class Functions
 		}
 
 		echo "</select>";
+	}
+
+	public static function Year_Select( $year )
+	{
+		$years = "<select id='year_select' name='Year'>";
+
+		for ( $i = 2012; $i <= date( "Y", strtotime( "+1 years" ) ); $i++ )
+		{
+			$years 		.= "<option";
+
+			if ( $i == $year )
+				$years 	.= " selected='selected'";
+
+			$years 		.= ">" . $i . "</option>";
+		}
+
+		$years 			.= "</select>";
+
+		return $years;
+	}
+
+	public static function Month_Select( $month )
+	{
+		$month_names 	= array( "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" );
+		$months 		= "<select id='month_select' name='Month'>";
+
+		foreach ( $month_names as $month_in )
+		{
+			$months 	.= "<option";
+
+			if ($month_in == $month)
+				$months .= " selected='selected'";
+
+			$months 	.= ">".$month_in."</option>";
+		}
+
+		$months 		.= "</select>";
+
+		return $months;
 	}
 
 	public static function set_dateInput($month, $year) {

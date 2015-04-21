@@ -32,6 +32,7 @@ $total_expenses		= 0;
 	<?php
 		Functions::Output_TopHeader( $user_info[ 'name' ] );
 		Functions::Output_LeftNavigation( $month, $year );
+		Functions::Output_ChangeDate_Form( 'month_report.php', $month, $year );
 	?>
 	<div id="content">
 		<div id="content_details">

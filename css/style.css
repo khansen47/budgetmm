@@ -95,6 +95,12 @@ h1 a
 	font-size: 12pt;
 }
 
+#change_category_form
+{
+	float: left;
+	padding: 5px;
+}
+
 #left
 {
 	float: left;
@@ -161,16 +167,24 @@ h1 a
 	background-color: #FFF285;
 }
 
-.income-th
+.income-th a:link
 {
 	color: #8AB381;
-	cursor: pointer;
 }
 
-.expense-th
+.income-th a:visited
+{
+	color: #8AB381;
+}
+
+.expense-th a:link
 {
 	color: #CF969B;
-	cursor: pointer;
+}
+
+.expense-th a:visited
+{
+	color: #CF969B;
 }
 
 #man-cat
@@ -348,11 +362,18 @@ h1 a
 	padding-top: 50px;
 }
 
+#change_date_form
+{
+	float: right;
+	margin-bottom: 10px;
+}
+
 #month-select-div
 {
 	float: right;
 	margin-top: 20px;
 }
+
 #head-div
 {
 	float: left;

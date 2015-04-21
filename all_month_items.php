@@ -15,16 +15,17 @@ $year  		= Functions::Get_Int( 'Year' );
 Functions::Validate_User( $database2, $user_info );
 Functions::Validate_MonthYear( $month, $year );
 
-Functions::ItemList_Load_Date( $database2, $_SESSION[ 'month' ], $_SESSION[ 'year' ], $user_info[ 'id' ], $items );
+Functions::ItemList_Load_Date( $database2, $month, $year, $user_info[ 'id' ], $items );
 ?>
 <div id="container">
 	<?php
 		Functions::Output_TopHeader( $user_info[ 'name' ] );
 		Functions::Output_LeftNavigation( $month, $year );
+		Functions::Output_ChangeDate_Form( 'all_month_items.php', $month, $year );
 	?>
 	<div id="content">
 		<div id="content_details">
-			<h2>All items for <?php echo $_SESSION[ 'month' ]." ".$_SESSION[ 'year' ]; ?></h2>
+			<h2>All items for <?php echo $month." ".$year; ?></h2>
 			<div style="clear:both;" ></div>
 			<div id="details">
 				<table id="all_month_items">

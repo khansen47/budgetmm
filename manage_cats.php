@@ -86,6 +86,7 @@ $income->execute();
 	<?php
 		Functions::Output_TopHeader( $user_info[ 'name' ] );
 		Functions::Output_LeftNavigation( $month, $year );
+		Functions::Output_ChangeDate_Form( 'manage_cats.php', $month, $year );
 	?>
 	<div id="content">
 		<div id="content_details">

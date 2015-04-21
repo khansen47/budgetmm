@@ -1,4 +1,5 @@
 <?php
+//TODO REMOVE FILE
 include_once( "../classes/database.php" );
 include_once( "../classes/functions.php" );
 include_once( "../classes/layout.php" );

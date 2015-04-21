@@ -36,11 +36,14 @@ $diff 		= $category[ 'budget' ] - number_format( ( $cat_year_total[ 'total' ] / 
 	<?php
 		Functions::Output_TopHeader( $user_info[ 'name' ] );
 		Functions::Output_LeftNavigation( $month, $year );
+
+		$Cat_ID[ 'Cat_ID' ] = $cat_id;
+
+		Functions::Output_ChangeDate_Form( 'year_review_cat.php', $month, $year, $Cat_ID );
 	?>
 	<div id="content">
 		<div id="content_details">
 			<h1>Review of <?php echo $year; ?></h1>
-			<div style="float: right; margin-top: -50px;"><select id="year_review_select"><?php echo $function->year_review_options( $year ); ?></select></div>
 			<div id="man-cat">
 				<p>Income</p>	<?php echo $income_list; ?>
 				<p>Expenses</p>	<?php echo $expense_list; ?>
@@ -60,15 +63,14 @@ $diff 		= $category[ 'budget' ] - number_format( ( $cat_year_total[ 'total' ] / 
 					<?php
 					for ( $i = 1; $i <= 12; $i++ )
 					{
-						$month_name 			= Functions::month_string( $i );
+						$month_name		= Functions::month_string( $i );
 
 						Functions::Item_CategoryDate_Total( $database2, $cat_id, $month_name, $year, $user_info[ 'id' ], $month_total );
 
-						$month_total 			= $month_total[ 'total' ] ? $month_total[ 'total' ] : 0;
-						$year_review_cat_month = 'year_review_cat.php?Cat_ID=' . $cat_id . '&Month=' . $month_name . '&Year=' . $year;
+						$month_total 	= $month_total[ 'total' ] ? $month_total[ 'total' ] : 0;
 
-						if ( Functions::month_int( $_SESSION[ 'month' ] ) == $i )	echo "<a href='" . $year_review_cat_month . "''><b>".$month_name."</b>";
-						else														echo "<a href='" . $year_review_cat_month . "''>".$month_name;
+						if ( Functions::month_int( $month ) == $i )	echo "<b>".$month_name."</b>";
+						else										echo $month_name;
 
 						echo ": <strong style='font-size:12pt;'>$ ".number_format( $month_total, 2 )."</strong></a></p>";
 					}

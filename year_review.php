@@ -100,11 +100,11 @@ $month_num = $year == date( "Y" ) ? date( "m" ) : 12;
 	<?php
 		Functions::Output_TopHeader( $user_info[ 'name' ] );
 		Functions::Output_LeftNavigation( $month, $year );
+		Functions::Output_ChangeDate_Form( 'year_review.php', $month, $year );
 	?>
 	<div id="content">
 		<div id="content_details">
 			<h1>Review of <?php echo $year; ?></h1>
-			<div style="float: right; margin-top: -50px;"><select id="year_review_select"><?php echo $function->year_review_options( $year ); ?></select></div>
 			<div id="man-cat">
 				<p>Income</p>	<?php echo $income_list; ?>
 				<p>Expenses</p>	<?php echo $expense_list; ?>

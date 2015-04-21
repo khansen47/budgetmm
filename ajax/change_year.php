@@ -1,4 +1,5 @@
 <?php
+//TODO REMOVE FILE
 require_once("../classes/layout.php");
 require_once("../classes/functions.php");
 $layout 	= new Layout();
