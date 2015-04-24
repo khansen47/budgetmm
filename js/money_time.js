@@ -116,6 +116,8 @@ $( document ).ready( function()
 		var day			= $( "#edit-item-day" ).val();
 		var comment		= $( "#edit-item-comment" ).val();
 
+		amount = amount.replace( ',', '' );
+
 		if ( cat_id == undefined )				return alert( "Please select a valid Category" );
 		if ( isNaN( amount ) || amount <= 0 )	return alert( "Please enter an appropriate amount" );
 
