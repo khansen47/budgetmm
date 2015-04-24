@@ -1,4 +1,11 @@
 <?php
+/*
+TODO:
+	- clean up file
+	- address queries
+
+*/
+
 include_once( "classes/database.php" );
 include_once( "classes/functions.php" );
 include_once( "classes/layout.php" );
@@ -53,8 +60,8 @@ $total_assoc 		= $totals->fetch_assoc();
 //TODO BUILD href to year_review_cat.php?Cat_ID=&Year=
 foreach ( $categories as $key => $category )
 {
-	if ($category[ 'type_id' ] == 1)		$income_list 	= $income_list."<a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a><br />";
-	elseif ($category[ 'type_id' ] == 2)	$expense_list 	= $expense_list."<a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a><br />";
+	if ($category[ 'type_id' ] == 1)		$income_list 	= $income_list."<span class='income-th'><a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a></span><br />";
+	elseif ($category[ 'type_id' ] == 2)	$expense_list 	= $expense_list."<span class='expense-th'><a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a></span><br />";
 }
 
 $month_count = 1;

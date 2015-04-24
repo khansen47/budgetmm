@@ -11,7 +11,7 @@ LAYOUT
 	- Change background
 	- YEAR will have multiple aspects
 		- Year review will be the same
-		- Add year items ( will show all items for the year? )
+		- All year items ( will show all items for the year? )
 	- MONTH will have multiple aspects
 		- Month items will remain the same
 		- Month compare to previous years
@@ -35,7 +35,7 @@ NEW FEATURES
 		- See all items from target from X date to y, etc.
 
 	
-FEATURE ADDED
+FEATURES ADDED
 	- Month Report Page which displays the monthly report I typically due. look at documents\Budget Month Review\March
 	
 BUGS

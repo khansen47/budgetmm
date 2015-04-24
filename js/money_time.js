@@ -50,7 +50,7 @@ $( document ).ready( function()
 		if ( cat_id == undefined )				return alert( "Please select a valid Category" );
 		if ( isNaN( amount ) || amount <= 0 )	return alert( "Please enter an appropriate amount" );
 
-		$.fn.json( 'add_item', $.param( { 'cat_id' : cat_id, 'amount' : amount, 'date' : date, 'comment' : comment } ), function( response )
+		$.fn.json( 'item_add', $.param( { 'cat_id' : cat_id, 'amount' : amount, 'date' : date, 'comment' : comment } ), function( response )
 		{
 			if ( !response.success )
 			{
@@ -119,7 +119,7 @@ $( document ).ready( function()
 		if ( cat_id == undefined )				return alert( "Please select a valid Category" );
 		if ( isNaN( amount ) || amount <= 0 )	return alert( "Please enter an appropriate amount" );
 
-		$.fn.json( 'edit_item', $.param( { 'item_id' : item_id, 'cat_id' : cat_id, 'amount' : amount, 'day' : day, 'comment' : comment } ), function( response )
+		$.fn.json( 'item_edit', $.param( { 'item_id' : item_id, 'cat_id' : cat_id, 'amount' : amount, 'day' : day, 'comment' : comment } ), function( response )
 		{
 			if ( !response.success )
 			{
@@ -139,7 +139,7 @@ $( document ).ready( function()
 		{
 			$( "#delete-item" ).die( "click" );
 
-			$.fn.json( 'delete_item', $.param( { 'item_id' : $( this ).attr( "item-id" ) } ), function( response )
+			$.fn.json( 'item_delete', $.param( { 'item_id' : $( this ).attr( "item-id" ) } ), function( response )
 			{
 				if ( !response.success )
 				{
@@ -150,22 +150,82 @@ $( document ).ready( function()
 			} );
 		}
 	});
-//OLDER JS
 
-	$("#expenses-cats span").live("click", function() {
-		var cat_id = $(this).attr("cat-id");
-		$.ajax({
-			type: "POST",
-			url: "ajax/cat_edit.php",
-			data: {"cat_id":cat_id},
-			success: function(data){
-				$("#category-edit").html(data);
-			},
-			error: function(){
-				alert("error");
+	$( "#add_cat_submit" ).bind( "click", function()
+	{
+		var type_id 	= $( '#add_type_id' ).val();
+		var user_id 	= $( '#add_user_id' ).val();
+		var name 		= $( '#add_cat_name' ).val();
+		var budget 		= $( '#add_cat_budget' ).val();
+		var start_month	= $( '#add_start_month' ).val();
+		var start_year	= $( '#add_start_year' ).val();
+		var end_month	= $( '#add_end_month' ).val();
+		var end_year	= $( '#add_end_year' ).val();
+
+		$.fn.json( 'category_add', $.param( { 'Type_ID' 	: type_id, 
+											  'User_ID' 	: user_id,
+											  'Name' 		: name,
+											  'Budget' 		: budget,
+											  'Start_Month' : start_month,
+											  'Start_Year' 	: start_year,
+											  'End_Month' 	: end_month,
+											  'End_Year' 	: end_year } ), function( response )
+		{
+			if ( !response.success )
+			{
+				return alert( response.error_message );
 			}
-		});
-	});
+
+			location.reload();
+		} );
+	} );
+
+	$( "#edit_cat_save" ).bind( "click", function()
+	{
+		var id			= $( '#edit_id' ).val();
+		var name 		= $( '#edit_name' ).val();
+		var budget 		= $( '#edit_budget' ).val();
+		var start_month	= $( '#edit_start_month' ).val();
+		var start_year	= $( '#edit_start_year' ).val();
+		var end_month	= $( '#edit_end_month' ).val();
+		var end_year	= $( '#edit_end_year' ).val();
+
+		$.fn.json( 'category_edit', $.param( { 'ID' 			: id, 
+											   'Name' 			: name,
+											   'Budget' 		: budget,
+											   'Start_Month' 	: start_month,
+											   'Start_Year' 	: start_year,
+											   'End_Month' 		: end_month,
+											   'End_Year' 		: end_year } ), function( response )
+		{
+			if ( !response.success )
+			{
+				return alert( response.error_message );
+			}
+
+			location.reload();
+		} );
+	} );
+
+	$( "#delete_cat" ).bind( "click", function()
+	{
+		var id 		= $( '#edit_id' ).val();
+		var month 	= $( '#month' ).val();
+		var year 	= $( '#year' ).val();
+
+		$.fn.json( 'category_delete', $.param( { 'ID' : id } ), function( response )
+		{
+			if ( !response.success )
+			{
+				return alert( response.error_message );
+			}
+
+			window.location = 'manage_cats.php?Month=' + month + '&Year=' + year;
+		} );
+	} );
+
+
+//OLDER JS
 
 
 	$("#all-years").bind("click", function() {
@@ -182,22 +242,23 @@ $( document ).ready( function()
 		});
 	});
 
-//Todo add cat
-	$("#add-cat-submit").live("click", function() {
-		$.ajax({
-			type: "POST",
-			url: "ajax/manage_cats.php",
-			data: {	"cat_type":$("#cat-type option:selected").attr("id"),
-					"cat_name":$("#add-cat-name").val(),
-					"cat_budget":$("#add-cat-budget").val(),
-					"cat_s_month":$("#add-start-month option:selected").val(),
-					"cat_s_year":$("#add-start-year option:selected").val(),
-					"cat_e_month":$("#add-end-month option:selected").val(),
-					"cat_e_year":$("#add-end-year option:selected").val()},
-			success: function(data){
-				$("#content").html(data);
-			}
-		});
+/*
+	//JS to delete
+
+
+//todo delete cat
+	$("#delete-cat").live("click", function() {
+		var con = confirm("Are you sure you want to delete this category?");
+		if (con) {
+			$.ajax({
+				type: "POST",
+				url: "ajax/manage_cats.php",
+				data: {"cat_id":$("#edit-id").val(), "delete":1},
+				success: function(data){
+					$("#content").html(data);
+				}
+			});
+		}
 	});
 
 //Todo edit cat
@@ -222,25 +283,38 @@ $( document ).ready( function()
 		});
 	});
 
-//todo delete cat
-	$("#delete-cat").live("click", function() {
-		var con = confirm("Are you sure you want to delete this category? It will remove all items associated with it.");
-		if (con) {
-			$.ajax({
-				type: "POST",
-				url: "ajax/manage_cats.php",
-				data: {"cat_id":$("#edit-id").val(), "delete":1},
-				success: function(data){
-					$("#content").html(data);
-				}
-			});
-		}
+//Todo add cat
+	$("#add-cat-submit").live("click", function() {
+		$.ajax({
+			type: "POST",
+			url: "ajax/manage_cats.php",
+			data: {	"cat_type":$("#cat-type option:selected").attr("id"),
+					"cat_name":$("#add-cat-name").val(),
+					"cat_budget":$("#add-cat-budget").val(),
+					"cat_s_month":$("#add-start-month option:selected").val(),
+					"cat_s_year":$("#add-start-year option:selected").val(),
+					"cat_e_month":$("#add-end-month option:selected").val(),
+					"cat_e_year":$("#add-end-year option:selected").val()},
+			success: function(data){
+				$("#content").html(data);
+			}
+		});
 	});
 
-
-/*
-	//OLDER JavaScript Code
-
+	$("#expenses-cats span").live("click", function() {
+		var cat_id = $(this).attr("cat-id");
+		$.ajax({
+			type: "POST",
+			url: "ajax/cat_edit.php",
+			data: {"cat_id":cat_id},
+			success: function(data){
+				$("#category-edit").html(data);
+			},
+			error: function(){
+				alert("error");
+			}
+		});
+	});
 
 	$("#manage-cats").bind("click", function() {
 		$.ajax({

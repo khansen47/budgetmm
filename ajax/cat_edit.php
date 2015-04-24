@@ -1,4 +1,6 @@
 <?php
+//TODO REMOVE FILE
+/*
 include_once("../classes/database.php");
 include_once("../classes/functions.php");
 include_once("../classes/layout.php");
@@ -19,7 +21,6 @@ $cat_id			= Functions::Post_Int( "cat_id" );
 
 Functions::Category_Load_ID( $database2, $cat_id, $category );
 
-/*--------------Edit Cat -------------------*/
 $edit_errors	= '';
 $success		= '';
 
@@ -74,7 +75,6 @@ if ( $edit_type != "" && $edit_name != "" && $edit_budget != "" )
 	}
 }
 
-/* ---------- End Edit Cat -----------------*/
 
 $s_date = explode( "-", $category[ 'start_date' ] );
 $e_date = explode( "-", $category[ 'end_date' ] );
@@ -124,3 +124,6 @@ if ( sizeof( $e_date ) == 1 )	$e_date = array('0000', $category[ 'end_date' ], '
 	</tr>
 </table>
 <input type="hidden" id="edit-id" value="<?php echo $cat_id; ?>" />
+<?php
+*/
+?>

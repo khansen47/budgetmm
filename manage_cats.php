@@ -12,74 +12,13 @@ $layout->header();
 
 $month 		= Functions::Get( 'Month' );
 $year  		= Functions::Get_Int( 'Year' );
+$cat_id		= Functions::Get_Int( 'Category_ID' );
 
 Functions::Validate_User( $database2, $user_info );
 Functions::Validate_MonthYear( $month, $year );
 
- /* -------------- Add category ---------------*/
-$cat_type		= $function->post("cat_type");
-$cat_name		= $function->post("cat_name");
-$cat_budget		= $function->post("cat_budget");
-$cat_s_month	= $function->post("cat_s_month");
-$cat_s_year		= $function->post("cat_s_year");
-$cat_e_month	= $function->post("cat_e_month");
-$cat_e_year		= $function->post("cat_e_year");
-
-$errors 		= "";
-$success 		= "";
-$color 			= "red";
-
-$start_date		= $cat_s_year."-".$cat_s_month."-00";
-$end_date		= $cat_e_year."-".$cat_e_month."-00";
-
-if ($cat_type != "" && $cat_name != "" && $cat_budget != "") {
-	if ($cat_type == "") {
-		$errors = "Please do not try to hack<br />";
-	}
-
-	if ($cat_name == "") {
-		$errors .= "Please enter a Name<br />";
-	}
-
-	if ($cat_budget != "" && !is_numeric($cat_budget)) {
-		$errors .= "Budget must be a proper number";
-	}
-
-	if ($errors == "") {
-		$stmt = $database->mysqli->prepare("INSERT IGNORE INTO category SET name = ?, user_id = ?, type_id = ?, budget = ?, start_date = ?, end_date = ?, last_updated = NOW()");
-		$stmt->bind_param("siidss", $cat_name, $user_info['id'], $cat_type, $cat_budget, $start_date, $end_date);
-		$stmt->execute();
-		$stmt->close();
-
-		$success = "Successfully added category!";
-		$color = "green";
-		$cat_type = "";
-		$cat_name = "";
-		$cat_budget = "";
-	}
-}
-
-/* ---------- End Add Cat ------------------*/
-
-/*---------------DELETE CAT-----------------*/
-$cat_id	= $function->post("cat_id");
-$delete	= $function->post("delete");
-
-if ($delete == 1 && $cat_id != ""){
-	$stmt = $database->mysqli->prepare("UPDATE category SET deprecated = 1, last_updated = NOW() WHERE id = ?");
-	$stmt->bind_param("i", $cat_id);
-	$stmt->execute();
-	$stmt->close();
-
-	$success = "Successfully deleted category";
-}
-
-/*---------------END DELETE CAT-----------------*/
-
-$income = $database->mysqli->prepare("SELECT id, name, budget FROM category WHERE type_id = '1' AND user_id = ? AND deprecated = 0");
-$income->bind_param("i", $user_info['id']);
-$income->bind_result($inc_id, $inc_name, $inc_budget);
-$income->execute();
+Functions::CategoryList_Load_All( $database2, $user_info[ 'id' ], $categories );
+Functions::Category_Load_ID( $database2, $cat_id, $category );
 
 ?>
 <div id="container">
@@ -93,44 +32,125 @@ $income->execute();
 			<div class="header">
 				<h1>Manage Categories</h1>
 			</div>
-			<div id="add-cat">
-				Add Category: <select id="cat-type"><option id='2'>Expense</option><option id="1">Income</option></select>
-				<b>Name:</b> <input type="text" id="add-cat-name" value="<?php echo $cat_name; ?>" />
-				Budget:		<input type="text" id="add-cat-budget" size="10px" value="0" />
-
-				Start Date: <select id="add-start-month"><?php echo $function->month_options( '0' ); ?></select>
-							<select id="add-start-year"><?php echo $function->year_options( '0000' ); ?></select>
-
-				End Date: 	<select id="add-end-month"><?php echo $function->month_options( '0' ); ?></select>
-							<select id="add-end-year"><?php echo $function->year_options( '0000' ); ?></select>
-				<br />
-				<br />
-				<input type="button" id="add-cat-submit" value="Add Category" />
-				<?php echo "<span style='color:".$color."'>".$errors.$success."</span>"; ?>
-			</div>
 			<div id="cat-content">
 				<div id="income-cats">
 					<h2>Income</h2>
-					<?php while ($income->fetch()) { ?>
-							<span cat-id="<?php echo $inc_id; ?>"><?php echo $inc_name;?></span><br />
-					<?php }
-						$income->close();
+					<?php
+						$expenses 	= 0;
+						$class 		= 'income-th';
 
-						$expenses = $database->mysqli->prepare("SELECT id, name, budget FROM category WHERE type_id = '2' AND user_id = ? AND deprecated = 0 ORDER BY name");
-						$expenses->bind_param("i", $user_info['id']);
-						$expenses->bind_result($exp_id, $exp_name, $exp_budget);
-						$expenses->execute();
+						foreach ( $categories as $key => $cat )
+						{
+							if ( $cat[ 'type_id' ] ==  2 && $expenses == 0 )
+							{
+								$expenses 	= 1;
+								$class 		= 'expense-th';
+								echo '</div><div id="expenses-cats"><h2>Expenses</h2>';
+							}
+
+							$url = 'manage_cats.php?Category_ID=' . $cat[ 'id' ] .'&Month=' . $month . '&Year=' . $year;
+
+							echo '<span class="' . $class . '"><a href="' . $url . '">' . $cat[ 'name' ] . '</a></span><br />';
+						}
 					?>
 				</div>
-				<div id="expenses-cats">
-					<h2>Expenses</h2>
-					<?php while ($expenses->fetch()) { ?>
-							<span cat-id="<?php echo $exp_id; ?>"><?php echo $exp_name;?></span><br />
-					<?php }
-						$expenses->close(); ?>
-				</div>
-				<div id="category-edit">
-				</div>
+			</div>
+			<div id="add-cat">
+				<h3>Add Category:</h3>
+				<table cellspacing="2" cellpadding="1">
+					<tr>
+						<td><b>Type:</b></td>
+						<td>
+							<select id="add_type_id">
+								<option value='2'>Expense</option>
+								<option value="1">Income</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td><b>Name:</b></td>
+						<td><input type="text" id="add_cat_name" value="" /></td>
+					</tr>
+					<tr>
+						<td><b>Budget:</b></td>
+						<td><input type="text" id="add_cat_budget" size="10px" value="0" /></td>
+					</tr>
+					<tr>
+						<td><b>Start Date:</b></td>
+						<td>
+							<select id="add_start_month"><?php echo Functions::month_options( '00' ); ?></select>
+							<select id="add_start_year"><?php echo Functions::year_options( '0000' ); ?></select>
+						</td>
+					</tr>
+					<tr>
+						<td><b>End Date:</b></td>
+						<td>
+							<select id="add_end_month"><?php echo Functions::month_options( '00' ); ?></select>
+							<select id="add_end_year"><?php echo Functions::year_options( '0000' ); ?></select>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td><input type="button" id="add_cat_submit" value="Add" /></td>
+					</tr>
+				</table>
+				<input type="hidden" value="<?php echo $user_info[ 'id' ]; ?>" id="add_user_id" />
+			</div>
+			<div id="category-edit">
+				<?php 
+					if ( $cat_id != 0 )
+					{
+
+						$s_date = explode( "-", $category[ 'start_date' ] );
+						$e_date = explode( "-", $category[ 'end_date' ] );
+
+						if ( sizeof( $s_date ) == 1 )	$s_date = array( '0000', $category[ 'start_date' ], '00' );
+						if ( sizeof( $e_date ) == 1 )	$e_date = array( '0000', $category[ 'end_date' ], '00' );
+				?>
+
+				<h3>Edit Category:</h3>
+				<table cellspacing="2" cellpadding="1">
+					<tr>
+						<td>Name:</td>
+						<td><input type="text" id="edit_name" value="<?php echo $category[ 'name' ]; ?>" /></td>
+					</tr>
+					<tr>
+						<td>Type:</td>
+						<td>
+							<?php 
+								if ( $category[ 'type_id' ] == 2 ) 		echo "<b>Expense</b>";
+								else if ( $category[ 'type_id' ] == 1 ) echo "<b>Income</b>";
+							?>
+						</td>
+					</tr>
+					<tr>
+						<td>Budget:</td>
+						<td><input type="text" id="edit_budget" size="10px" value="<?php echo number_format( $category[ 'budget' ], 2 ); ?>" /></td>
+					</tr>
+					<tr>
+						<td>Start Date:</td>
+						<td>
+							<select id="edit_start_month"><?php echo Functions::month_options( $s_date[ 1 ] ); ?></select>
+							<select id="edit_start_year"><?php echo Functions::year_options( $s_date[ 0 ] ); ?></select>
+						</td>
+					</tr>
+					<tr>
+						<td>End Date:</td>
+						<td>
+							<select id="edit_end_month"><?php echo Functions::month_options( $e_date[ 1 ] ); ?></select>
+							<select id="edit_end_year"><?php echo Functions::year_options( $e_date[ 0 ] ); ?></select>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td><input id="edit_cat_save" type="button" value="Save" /></td>
+						<td><input id="delete_cat" type="button" value="Delete" /></td>
+					</tr>
+				</table>
+				<input type="hidden" id="edit_id" 	value="<?php echo $cat_id; ?>" />
+				<input type="hidden" id="month" 	value="<?php echo $month; ?>" />
+				<input type="hidden" id="year" 		value="<?php echo $year; ?>" />
+				<?php } ?>
 			</div>
 			<div style="clear: both;"></div>
 		</div>

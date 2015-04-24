@@ -1,6 +1,7 @@
 <?php
 /*
 	File TODO:
+		CLEAN UP FILE
 		Onchange year month, set post variables?
 		Iframes?
 		Ajax. change to use the new ajax stuff

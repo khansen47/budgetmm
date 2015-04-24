@@ -123,6 +123,11 @@ class Functions
 		return $db->single( 'SELECT * FROM users WHERE username = ?', $user, $username );
 	}
 
+	public static function User_Load_ID( &$db, $id, &$user )
+	{
+		return $db->single( 'SELECT * FROM users WHERE id = ?', $user, $id );
+	}
+
 	/*
 	*
 	* Helper functions for table item
@@ -284,21 +289,46 @@ class Functions
 	* Helper functions for table category
 	*
 	*/
-	public static function Category_Update_ID( &$db, $category )
+	public static function Category_Insert( &$db, $category )
+	{
+		return $db->query( "INSERT INTO category
+							( name, user_id, type_id, budget, start_date, end_date, deprecated, last_updated )
+							VALUES
+							( ?, ?, ?, ?, ?, ?, ?, ? )",
+							$category[ 'name' ], $category[ 'user_id' ], $category[ 'type_id' ], $category[ 'budget' ], $category[ 'start_date' ],
+							$category[ 'end_date' ], $category[ 'deprecated' ], 0 );
+	}
+
+	public static function Category_Update( &$db, $category )
 	{
 		return $db->query( "UPDATE
 								category
 							SET
-								name = ?, type_id = ?, budget = ?, start_date = ?, end_date = ?, last_updated = NOW()
+								name = ?, budget = ?, start_date = ?, end_date = ?, last_updated = NOW()
 							WHERE
 								id = ?",
-							$category[ 'name' ], $category[ 'type_id' ], $category[ 'budget' ], $category[ 'start_date' ], $category[ 'end_date' ],
+							$category[ 'name' ], $category[ 'budget' ], $category[ 'start_date' ], $category[ 'end_date' ],
 							$category[ 'id' ] );
+	}
+
+	public static function Category_Delete( &$db, $id )
+	{
+		return $db->query( 'DELETE FROM category WHERE id = ?', $id );
+	}
+
+	public static function Category_Deprecate( &$db, $id )
+	{
+		return $db->query( 'UPDATE category SET deprecated = 1, last_updated = NOW() WHERE id = ?', $id );
 	}
 
 	public static function Category_Load_ID( &$db, $cat_id, &$category )
 	{
 		return $db->single( "SELECT * FROM category WHERE id = ?", $category, $cat_id );
+	}
+
+	public static function Category_Load_Name( &$db, $name, &$category )
+	{
+		return $db->single( "SELECT * FROM category WHERE name = ?", $category, $name );
 	}
 
 	public static function Category_Load_Default( &$db, &$cat_id )
@@ -373,8 +403,8 @@ class Functions
 		//<li><a id="manage_auto">Edit Reaccuring Bills</a></li>
 
 		echo '<div id="left">
-				<h3><a href="' . $home_link . '" style="color:#80696B;">Home<a></h3>
-				<ul>
+				<ul class="top_nav">
+					<li><a href="' . $home_link . '">Home</a></li>
 					<li><a href="' . $year_review_link 		. '">Year Review</a></li>
 					<li><a href="' . $edit_categories_link	. '">Edit Categories</a></li>
 					<li><a href="' . $month_items_link 		. '">Month Items</a></li>
@@ -583,7 +613,7 @@ class Functions
 				$month_option .= ' selected="selected"';
 			}
 
-			$month_option .= ' value="$i">'.$this->month_string_short( $i ).'</option>';
+			$month_option .= ' value="' . $i . '">'.Functions::month_string_short( $i ).'</option>';
 		}
 
 		return $month_option;

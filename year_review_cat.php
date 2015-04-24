@@ -1,17 +1,24 @@
 <?php
+/*
+TODO:
+	- CLEAN UP FILE
+*/
+
 include_once( "classes/database.php" );
 include_once( "classes/functions.php" );
 include_once( "classes/layout.php" );
 
-$database2 	= new Database2();
-$function 	= new Functions();
-$layout 	= new Layout();
+$database2 		= new Database2();
+$function 		= new Functions();
+$layout 		= new Layout();
 
 $layout->header();
 
-$cat_id		= Functions::Get_Int( 'Cat_ID' );
-$year  		= Functions::Get_Int( 'Year' );
-$month 		= Functions::Get( 'Month' );
+$cat_id			= Functions::Get_Int( 'Cat_ID' );
+$year  			= Functions::Get_Int( 'Year' );
+$month 			= Functions::Get( 'Month' );
+$income_list 	= '';
+$expense_list 	= '';
 
 Functions::Validate_User( $database2, $user_info );
 Functions::Validate_MonthYear( $month, $year );
@@ -23,8 +30,8 @@ Functions::CategoryList_Load_All( $database2, $user_info[ 'id' ], $categories );
 
 foreach ( $categories as $key => $category )
 {
-	if ( $category[ 'type_id' ] == 1 )		$income_list 	= $income_list."<a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a><br />";
-	elseif ( $category[ 'type_id' ] == 2 )	$expense_list 	= $expense_list."<a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a><br />";
+	if ( $category[ 'type_id' ] == 1 )		$income_list 	= $income_list . "<span class='income-th'><a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a></span><br />";
+	elseif ( $category[ 'type_id' ] == 2 )	$expense_list 	= $expense_list . "<span class='expense-th'><a href='year_review_cat.php?Cat_ID=" . $category[ 'id' ]."&Year=" . $year . "'>".$category[ 'name' ]."</a></span><br />";
 }
 
 Functions::Category_Load_ID( $database2, $cat_id, $category );
@@ -64,13 +71,14 @@ $diff 		= $category[ 'budget' ] - number_format( ( $cat_year_total[ 'total' ] / 
 					for ( $i = 1; $i <= 12; $i++ )
 					{
 						$month_name		= Functions::month_string( $i );
+						$url			= 'year_review_cat.php?Month=' . $month_name . '&Year=' . $year . '&Cat_ID=' . $cat_id;
 
 						Functions::Item_CategoryDate_Total( $database2, $cat_id, $month_name, $year, $user_info[ 'id' ], $month_total );
 
 						$month_total 	= $month_total[ 'total' ] ? $month_total[ 'total' ] : 0;
 
-						if ( Functions::month_int( $month ) == $i )	echo "<b>".$month_name."</b>";
-						else										echo $month_name;
+						if ( Functions::month_int( $month ) == $i )	echo '<a href="' . $url . '"><b>' .$month_name."</b></a>";
+						else										echo '<a href="' . $url . '">' . $month_name . '</a>';
 
 						echo ": <strong style='font-size:12pt;'>$ ".number_format( $month_total, 2 )."</strong></a></p>";
 					}
