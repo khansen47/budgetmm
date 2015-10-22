@@ -76,6 +76,10 @@ Functions::Category_Load_ID( $database2, $cat_id, $category );
 						<td><input type="text" id="add_cat_budget" size="10px" value="0" /></td>
 					</tr>
 					<tr>
+						<td>&nbsp;</td>
+						<td><input type="checkbox" id="add_cat_cntrl_bdgt" value="1" />Controlled Budget</td>
+					</tr>
+					<tr>
 						<td><b>Start Date:</b></td>
 						<td>
 							<select id="add_start_month"><?php echo Functions::month_options( '00' ); ?></select>
@@ -126,6 +130,16 @@ Functions::Category_Load_ID( $database2, $cat_id, $category );
 					<tr>
 						<td>Budget:</td>
 						<td><input type="text" id="edit_budget" size="10px" value="<?php echo number_format( $category[ 'budget' ], 2 ); ?>" /></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							<?php if ( $category[ 'cntrl_bdgt' ] ) { ?>
+									<input type="checkbox" id="edit_cat_cntrl_bdgt" value="1" checked />Controlled Budget
+								<?php } else { ?>
+									<input type="checkbox" id="edit_cat_cntrl_bdgt" value="1" />Controlled Budget
+								<?php } ?>
+						</td>
 					</tr>
 					<tr>
 						<td>Start Date:</td>

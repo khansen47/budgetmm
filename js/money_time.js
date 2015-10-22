@@ -159,19 +159,21 @@ $( document ).ready( function()
 		var user_id 	= $( '#add_user_id' ).val();
 		var name 		= $( '#add_cat_name' ).val();
 		var budget 		= $( '#add_cat_budget' ).val();
+		var cntrl_bdgt 	= $( '#add_cat_cntrl_bdgt' ).val();
 		var start_month	= $( '#add_start_month' ).val();
 		var start_year	= $( '#add_start_year' ).val();
 		var end_month	= $( '#add_end_month' ).val();
 		var end_year	= $( '#add_end_year' ).val();
 
-		$.fn.json( 'category_add', $.param( { 'Type_ID' 	: type_id, 
-											  'User_ID' 	: user_id,
-											  'Name' 		: name,
-											  'Budget' 		: budget,
-											  'Start_Month' : start_month,
-											  'Start_Year' 	: start_year,
-											  'End_Month' 	: end_month,
-											  'End_Year' 	: end_year } ), function( response )
+		$.fn.json( 'category_add', $.param( { 'Type_ID' 			: type_id, 
+											  'User_ID' 			: user_id,
+											  'Name' 				: name,
+											  'Budget' 				: budget,
+											  'Controlled_Budget' 	: cntrl_bdgt,
+											  'Start_Month' 		: start_month,
+											  'Start_Year' 			: start_year,
+											  'End_Month' 			: end_month,
+											  'End_Year' 			: end_year } ), function( response )
 		{
 			if ( !response.success )
 			{
@@ -187,18 +189,20 @@ $( document ).ready( function()
 		var id			= $( '#edit_id' ).val();
 		var name 		= $( '#edit_name' ).val();
 		var budget 		= $( '#edit_budget' ).val();
+		var cntrl_bdgt 	= $( '#edit_cat_cntrl_bdgt' ).val();
 		var start_month	= $( '#edit_start_month' ).val();
 		var start_year	= $( '#edit_start_year' ).val();
 		var end_month	= $( '#edit_end_month' ).val();
 		var end_year	= $( '#edit_end_year' ).val();
 
-		$.fn.json( 'category_edit', $.param( { 'ID' 			: id, 
-											   'Name' 			: name,
-											   'Budget' 		: budget,
-											   'Start_Month' 	: start_month,
-											   'Start_Year' 	: start_year,
-											   'End_Month' 		: end_month,
-											   'End_Year' 		: end_year } ), function( response )
+		$.fn.json( 'category_edit', $.param( { 'ID' 				: id, 
+											   'Name' 				: name,
+											   'Budget' 			: budget,
+											   'Controlled_Budget' 	: cntrl_bdgt,
+											   'Start_Month' 		: start_month,
+											   'Start_Year' 		: start_year,
+											   'End_Month' 			: end_month,
+											   'End_Year' 			: end_year } ), function( response )
 		{
 			if ( !response.success )
 			{

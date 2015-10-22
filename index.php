@@ -2,11 +2,14 @@
 /*
 	File TODO:
 		CLEAN UP FILE
-		Onchange year month, set post variables?
-		Iframes?
-		Ajax. change to use the new ajax stuff
 		Categeory Review
 		content_details should not be limited and should expand the page
+		Converting files still
+		mobile view
+		classes
+		Month Projections
+		Category edit delete confirmation
+
 */
 include_once( "classes/database.php" );
 include_once( "classes/functions.php" );
@@ -89,7 +92,10 @@ Functions::Item_CategoryYear_Total( $database2, $cat_id, $year, $user_info[ 'id'
 			</div>
 		</div>
 		<div class="details-expand">
-		<?php  Functions::Category_Load_ID( $database2, $cat_id, $category ); ?>
+		<?php
+			Functions::Category_Load_ID( $database2, $cat_id, $category );
+			Functions::Item_CategoryDate_Total( $database2, $category[ 'id' ], $month, $year, $user_info[ 'id' ], $cat_total );
+		?>
 			<table class="detailed-table" cat-id="<?php echo $cat_id; ?>">
 				<tr align="left">
 					<th width="20px">Day</th>

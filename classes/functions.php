@@ -284,6 +284,22 @@ class Functions
 							 $total, $month, $year, $user_id );
 	}
 
+	public static function ItemCategoryMonth_Average( &$db, $years, $cat_id, $month, $year, &$average )
+	{
+		return $db->single( "SELECT
+								( SUM( i.amount ) / ? ) as total
+							 FROM
+								category c,
+								item i
+							 WHERE
+							 	c.id 			= ?		AND
+								i.cat_id 		= c.id 	AND 
+								c.cntrl_bdgt	= 0		AND
+								MONTH( i.date ) = ?		AND
+								YEAR( i.date ) != ?",
+							$average, $years, $cat_id, $month, $year );
+	}
+
 	/*
 	*
 	* Helper functions for table category
@@ -304,10 +320,10 @@ class Functions
 		return $db->query( "UPDATE
 								category
 							SET
-								name = ?, budget = ?, start_date = ?, end_date = ?, last_updated = NOW()
+								name = ?, budget = ?, cntrl_bdgt = ?, start_date = ?, end_date = ?, last_updated = NOW()
 							WHERE
 								id = ?",
-							$category[ 'name' ], $category[ 'budget' ], $category[ 'start_date' ], $category[ 'end_date' ],
+							$category[ 'name' ], $category[ 'budget' ], $category[ 'cntrl_bdgt' ], $category[ 'start_date' ], $category[ 'end_date' ],
 							$category[ 'id' ] );
 	}
 
@@ -392,11 +408,12 @@ class Functions
 	{
 		$month_year				= '?Month=' . $month . '&Year=' . $year;
 
-		$home_link		  		= 'index.php' 			. $month_year;
-		$year_review_link 		= 'year_review.php' 	. $month_year;
-		$month_items_link 		= 'all_month_items.php' . $month_year;
-		$month_report_link		= 'month_report.php' 	. $month_year;
-		$edit_categories_link	= 'manage_cats.php' 	. $month_year;
+		$home_link		  		= 'index.php' 				. $month_year;
+		$year_review_link 		= 'year_review.php' 		. $month_year;
+		$month_items_link 		= 'all_month_items.php' 	. $month_year;
+		$month_report_link		= 'month_report.php' 		. $month_year;
+		$edit_categories_link	= 'manage_cats.php' 		. $month_year;
+		$month_projection_link	= 'month_projection.php'	. $month_year;
 		$edit_bills_link		= '';
 		$overal_account_link	= '';
 
@@ -409,6 +426,7 @@ class Functions
 					<li><a href="' . $edit_categories_link	. '">Edit Categories</a></li>
 					<li><a href="' . $month_items_link 		. '">Month Items</a></li>
 					<li><a href="' . $month_report_link 	. '">Month Report</a></li>
+					<li><a href="' . $month_projection_link . '">Month Projection</a></li>
 					<li><a id="all-years">Overall Account</a></li>
 				</ul>
 			  </div>';
@@ -613,7 +631,7 @@ class Functions
 				$month_option .= ' selected="selected"';
 			}
 
-			$month_option .= ' value="' . $i . '">'.Functions::month_string_short( $i ).'</option>';
+			$month_option .= ' value="' . str_pad( $i, 2, '0', STR_PAD_LEFT ) . '">'.Functions::month_string_short( $i ).'</option>';
 		}
 
 		return $month_option;
